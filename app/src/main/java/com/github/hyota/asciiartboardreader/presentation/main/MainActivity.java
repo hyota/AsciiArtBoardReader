@@ -1,15 +1,18 @@
 package com.github.hyota.asciiartboardreader.presentation.main;
 
-import androidx.appcompat.app.AppCompatActivity;
-import android.os.Bundle;
-
 import com.github.hyota.asciiartboardreader.R;
+import com.github.hyota.asciiartboardreader.presentation.common.BaseActivity;
 
-public class MainActivity extends AppCompatActivity {
+import javax.inject.Inject;
+
+public class MainActivity extends BaseActivity implements MainView {
+
+    @Inject
+    MainPresenter presenter;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+    protected int getLayoutRes() {
+        return R.layout.activity_main;
     }
+
 }
