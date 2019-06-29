@@ -6,13 +6,13 @@ import javax.annotation.Nonnull;
 import javax.inject.Inject;
 
 @ActivityScope
-public class MainPresenterImpl implements MainPresenter {
+public class MainPresenterImpl implements MainContract.Presenter {
 
     @Nonnull
-    private MainView view;
+    private MainContract.View view;
 
     @Inject
-    public MainPresenterImpl(@Nonnull MainView view) {
+    public MainPresenterImpl(@Nonnull MainContract.View view) {
         this.view = view;
     }
 

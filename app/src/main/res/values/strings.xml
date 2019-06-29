@@ -1,3 +1,25 @@
 <resources>
     <string name="app_name">AsciiArtBoardReader</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <!-- 板編集 -->
+    <string name="hint_url">URL：http://xxx.xxx.xxx&#8230;</string>
+    <string name="hint_title">板名：○○板</string>
+    <string name="button_get">取得</string>
+
+    <!-- スレッド一覧 -->
+    <string name="label_count">レス：</string>
+    <string name="label_read_count">取得：</string>
+    <string name="label_new_count">新着：</string>
+    <string name="label_push">勢い：</string>
+    <string name="label_since">since：</string>
+    <string name="label_last_update">最終取得：</string>
+    <string name="label_last_write">最終書込：</string>
+
 </resources>
