@@ -1,28 +1,30 @@
 package com.github.hyota.asciiartboardreader.di;
 
+import com.github.hyota.asciiartboardreader.presentation.boardlist.BoardListFragment;
 import com.github.hyota.asciiartboardreader.presentation.main.MainActivity;
 import com.github.hyota.asciiartboardreader.presentation.main.MainContract;
 import com.github.hyota.asciiartboardreader.presentation.main.MainPresenterImpl;
 
+import dagger.Binds;
 import dagger.Module;
-import dagger.Provides;
+import dagger.android.ContributesAndroidInjector;
 
 /**
  * MainActivityにインジェクトするインスタンス生成クラス.
  */
 @Module
-public class MainActivityModule {
+abstract class MainActivityModule {
 
     @ActivityScope
-    @Provides
-    MainContract.View provideView(MainActivity view) {
-        return view;
-    }
+    @Binds
+    abstract MainContract.View provideView(MainActivity view);
 
     @ActivityScope
-    @Provides
-    MainContract.Presenter providePresenter(MainPresenterImpl presenter) {
-        return presenter;
-    }
+    @Binds
+    abstract MainContract.Presenter providePresenter(MainPresenterImpl presenter);
+
+    @ContributesAndroidInjector(modules = {BoardListFragmentModule.class})
+    @FragmentScope
+    abstract BoardListFragment contributeBoardListFragment();
 
 }

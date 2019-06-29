@@ -8,6 +8,9 @@
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
 
+    <!-- 板一覧 -->
+    <string name="title_board_list">板一覧</string>
+
     <!-- 板編集 -->
     <string name="hint_url">URL：http://xxx.xxx.xxx&#8230;</string>
     <string name="hint_title">板名：○○板</string>

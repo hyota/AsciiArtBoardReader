@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.widget.Toolbar;
@@ -13,6 +14,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.github.hyota.asciiartboardreader.R;
+import com.github.hyota.asciiartboardreader.domain.entity.Board;
+import com.github.hyota.asciiartboardreader.presentation.boardlist.BoardListFragment;
 import com.github.hyota.asciiartboardreader.presentation.common.BaseActivity;
 import com.google.android.material.navigation.NavigationView;
 
@@ -21,9 +24,11 @@ import javax.inject.Inject;
 import dagger.android.AndroidInjector;
 import dagger.android.DispatchingAndroidInjector;
 import dagger.android.support.HasSupportFragmentInjector;
-import lombok.NonNull;
+import timber.log.Timber;
 
-public class MainActivity extends BaseActivity implements MainContract.View, HasSupportFragmentInjector, NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends BaseActivity implements MainContract.View,
+        HasSupportFragmentInjector, NavigationView.OnNavigationItemSelectedListener,
+        BoardListFragment.OnBoardListFragmentInteractionListener {
     @Inject
     DispatchingAndroidInjector<Fragment> fragmentInjector;
     @Inject
@@ -48,10 +53,10 @@ public class MainActivity extends BaseActivity implements MainContract.View, Has
         FragmentManager manager = getSupportFragmentManager();
         if (manager.findFragmentByTag("main") == null) {
             // 初回時には取得できないため初期化する
-//            manager.beginTransaction()
-//                    .add(R.id.container, BbsListFragment.newInstance(), "main")
-//                    .addToBackStack(null)
-//                    .commit();
+            manager.beginTransaction()
+                    .add(R.id.container, BoardListFragment.newInstance(), "main")
+                    .addToBackStack(null)
+                    .commit();
         }
     }
 
@@ -92,7 +97,6 @@ public class MainActivity extends BaseActivity implements MainContract.View, Has
         return super.onOptionsItemSelected(item);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
@@ -122,4 +126,8 @@ public class MainActivity extends BaseActivity implements MainContract.View, Has
         return fragmentInjector;
     }
 
+    @Override
+    public void onSelectBoard(@NonNull Board item) {
+        Timber.d("select item title = %s, url = %s", item.getTitle(), item.getUrl());
+    }
 }
