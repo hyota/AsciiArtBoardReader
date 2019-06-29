@@ -36,7 +36,7 @@ dependencies {
 
     // Dagger2
     implementation 'com.google.dagger:dagger-android:2.23.2'
-    implementation 'com.google.dagger:dagger-android-support:2.23.2' // if you use the support libraries
+    implementation 'com.google.dagger:dagger-android-support:2.23.2'
     annotationProcessor 'com.google.dagger:dagger-compiler:2.23.2'
     annotationProcessor 'com.google.dagger:dagger-android-processor:2.23.2'
 
@@ -87,7 +87,8 @@ dependencies {
     // Room
     def room_version = "2.1.0"
     implementation "androidx.room:room-runtime:$room_version"
-    annotationProcessor "androidx.room:room-compiler:$room_version" // For Kotlin use kapt instead of annotationProcessor
+    annotationProcessor "androidx.room:room-compiler:$room_version"
+    // For Kotlin use kapt instead of annotationProcessor
     // optional - RxJava support for Room
     implementation "androidx.room:room-rxjava2:$room_version"
     // optional - Guava support for Room, including Optional and ListenableFuture
@@ -115,4 +116,7 @@ dependencies {
     // lombok
     compileOnly 'org.projectlombok:lombok:1.18.8'
     annotationProcessor 'org.projectlombok:lombok:1.18.8'
+
+    // SwipyRefreshLayout Android Arsenal
+    implementation 'com.github.orangegangsters:swipy:1.2.3@aar'
 }
