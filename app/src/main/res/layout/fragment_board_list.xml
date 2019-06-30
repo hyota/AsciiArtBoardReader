@@ -5,34 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/list"
+        android:name="com.github.hyota.asciiartboardreader.presentation.boardlist.BoardListFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@android:color/white"
-        tools:context=".presentation.main.MainActivity">
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/list"
-            android:name="com.github.hyota.asciiartboardreader.presentation.boardlist.BoardListFragment"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            app:layoutManager="LinearLayoutManager"
-            tools:context=".presentation.boardlist.BoardListFragment"
-            tools:listitem="@layout/item_board" />
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
-            android:layout_margin="@dimen/fab_margin"
-            android:tint="@android:color/white"
-            app:layout_anchorGravity="bottom|end"
-            app:srcCompat="@android:drawable/ic_input_add" />
-
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+        app:layoutManager="LinearLayoutManager"
+        tools:context=".presentation.boardlist.BoardListFragment"
+        tools:listitem="@layout/item_board" />
 
     <com.turingtechnologies.materialscrollbar.DragScrollBar
         android:id="@+id/drag_scroll_bar"
