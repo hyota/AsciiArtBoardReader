@@ -1,13 +1,16 @@
 package com.github.hyota.asciiartboardreader.presentation.main;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
@@ -17,10 +20,16 @@ import com.github.hyota.asciiartboardreader.R;
 import com.github.hyota.asciiartboardreader.domain.entity.Board;
 import com.github.hyota.asciiartboardreader.presentation.boardlist.BoardListFragment;
 import com.github.hyota.asciiartboardreader.presentation.common.BaseActivity;
+import com.github.hyota.asciiartboardreader.presentation.common.FloatingActionButtonCallback;
+import com.github.hyota.asciiartboardreader.presentation.common.ToolbarCallback;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
+
+import java.util.Objects;
 
 import javax.inject.Inject;
 
+import butterknife.BindView;
 import dagger.android.AndroidInjector;
 import dagger.android.DispatchingAndroidInjector;
 import dagger.android.support.HasSupportFragmentInjector;
@@ -28,20 +37,22 @@ import timber.log.Timber;
 
 public class MainActivity extends BaseActivity implements MainContract.View,
         HasSupportFragmentInjector, NavigationView.OnNavigationItemSelectedListener,
+        ToolbarCallback, FloatingActionButtonCallback,
         BoardListFragment.OnBoardListFragmentInteractionListener {
     @Inject
     DispatchingAndroidInjector<Fragment> fragmentInjector;
     @Inject
     MainContract.Presenter presenter;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+    @BindView(R.id.fab)
+    FloatingActionButton fab;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
-
-        Toolbar toolbar = findViewById(R.id.toolbar);
-
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
@@ -124,6 +135,28 @@ public class MainActivity extends BaseActivity implements MainContract.View,
     @Override
     public AndroidInjector<Fragment> supportFragmentInjector() {
         return fragmentInjector;
+    }
+
+    @Override
+    public void setTitle(@NonNull String title) {
+        toolbar.setTitle(title);
+    }
+
+    @Override
+    public void setOnClickListener(@Nullable View.OnClickListener listener) {
+        fab.setOnClickListener(listener);
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        fab.setEnabled(enabled);
+    }
+
+    @Override
+    public void setImage(int resId) {
+        Drawable drawable = Objects.requireNonNull(getDrawable(android.R.drawable.ic_input_add));
+        drawable.setTint(ContextCompat.getColor(this, android.R.color.white));
+        fab.setImageDrawable(drawable);
     }
 
     @Override

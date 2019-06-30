@@ -11,8 +11,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import java.util.Objects;
-
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import dagger.android.support.AndroidSupportInjection;
@@ -24,12 +22,22 @@ public abstract class BaseFragment extends Fragment {
 
     private Unbinder unbinder;
     protected Context context;
+    @Nullable
+    private ToolbarCallback toolbarCallback;
+    @Nullable
+    protected FloatingActionButtonCallback floatingActionButtonCallback;
 
     @Override
     public void onAttach(Context context) {
         AndroidSupportInjection.inject(this);
         super.onAttach(context);
         this.context = context;
+        if (context instanceof ToolbarCallback) {
+            this.toolbarCallback = (ToolbarCallback) context;
+        }
+        if (context instanceof FloatingActionButtonCallback) {
+            this.floatingActionButtonCallback = (FloatingActionButtonCallback) context;
+        }
     }
 
     @Nullable
@@ -43,7 +51,9 @@ public abstract class BaseFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        Objects.requireNonNull(getActivity()).setTitle(getToolbarTitle());
+        if (toolbarCallback != null) {
+            toolbarCallback.setTitle(getToolbarTitle());
+        }
     }
 
     @Override

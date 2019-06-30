@@ -22,6 +22,7 @@ import javax.annotation.Nonnull;
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import timber.log.Timber;
 
 /**
  * 板一覧.
@@ -34,6 +35,11 @@ public class BoardListFragment extends BaseFragment implements BoardListContract
     RecyclerView recyclerView;
     @Nullable
     private OnBoardListFragmentInteractionListener listener;
+
+
+    public interface OnBoardListFragmentInteractionListener {
+        void onSelectBoard(@NonNull Board item);
+    }
 
     /**
      * コンストラクタ.
@@ -58,6 +64,11 @@ public class BoardListFragment extends BaseFragment implements BoardListContract
         RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(context, DividerItemDecoration.VERTICAL);
         recyclerView.addItemDecoration(itemDecoration);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
+
+        if (floatingActionButtonCallback != null) {
+            floatingActionButtonCallback.setOnClickListener(v -> showAddDialog());
+            floatingActionButtonCallback.setImage(android.R.drawable.ic_input_add);
+        }
 
         return view;
     }
@@ -109,7 +120,8 @@ public class BoardListFragment extends BaseFragment implements BoardListContract
         recyclerView.setAdapter(new BoardRecyclerViewAdapter(bordList, listener));
     }
 
-    public interface OnBoardListFragmentInteractionListener {
-        void onSelectBoard(@NonNull Board item);
+    private void showAddDialog() {
+        Timber.d("showAddDialog");
     }
+
 }
