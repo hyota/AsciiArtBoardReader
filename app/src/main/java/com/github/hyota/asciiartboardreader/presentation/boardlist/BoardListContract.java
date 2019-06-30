@@ -23,6 +23,10 @@ public interface BoardListContract {
          */
         void setBordList(@Nonnull List<Board> bordList);
 
+        /**
+         * 板一覧を更新する.
+         */
+        void update();
     }
 
     /**

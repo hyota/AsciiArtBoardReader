@@ -1,25 +1,23 @@
 package com.github.hyota.asciiartboardreader.di;
 
+import com.github.hyota.asciiartboardreader.presentation.boardlist.BoardCreateEditDialogFragment;
 import com.github.hyota.asciiartboardreader.presentation.boardlist.BoardListContract;
 import com.github.hyota.asciiartboardreader.presentation.boardlist.BoardListFragment;
 import com.github.hyota.asciiartboardreader.presentation.boardlist.BoardListPresenterImpl;
 
+import dagger.Binds;
 import dagger.Module;
-import dagger.Provides;
+import dagger.android.ContributesAndroidInjector;
 
 @Module
-public class BoardListFragmentModule {
+public abstract class BoardListFragmentModule {
 
+    @Binds
     @FragmentScope
-    @Provides
-    BoardListContract.View provideView(BoardListFragment view) {
-        return view;
-    }
+    abstract BoardListContract.View provideView(BoardListFragment view);
 
+    @Binds
     @FragmentScope
-    @Provides
-    BoardListContract.Presenter providePresenter(BoardListPresenterImpl presenter) {
-        return presenter;
-    }
+    abstract BoardListContract.Presenter providePresenter(BoardListPresenterImpl presenter);
 
 }

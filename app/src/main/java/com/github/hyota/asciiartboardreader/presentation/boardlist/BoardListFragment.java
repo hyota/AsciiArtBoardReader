@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -27,14 +26,16 @@ import timber.log.Timber;
 /**
  * 板一覧.
  */
-public class BoardListFragment extends BaseFragment implements BoardListContract.View {
+public class BoardListFragment extends BaseFragment
+        implements BoardListContract.View, BoardCreateEditDialogFragment.Listener {
 
     @Inject
     BoardListContract.Presenter presenter;
     @BindView(R.id.list)
     RecyclerView recyclerView;
-    @Nullable
+
     private OnBoardListFragmentInteractionListener listener;
+    private RecyclerView.Adapter adapter;
 
 
     public interface OnBoardListFragmentInteractionListener {
@@ -117,11 +118,40 @@ public class BoardListFragment extends BaseFragment implements BoardListContract
 
     @Override
     public void setBordList(@Nonnull List<Board> bordList) {
-        recyclerView.setAdapter(new BoardRecyclerViewAdapter(bordList, listener));
+        adapter = new BoardRecyclerViewAdapter(bordList, new BoardRecyclerViewAdapter.Listener() {
+            @Override
+            public void onClick(@NonNull Board board) {
+                listener.onSelectBoard(board);
+            }
+
+            @Override
+            public void onLongClick(@NonNull Board board) {
+                BoardCreateEditDialogFragment.show(getChildFragmentManager(), board);
+            }
+        });
+        recyclerView.setAdapter(adapter);
     }
 
+    @Override
+    public void update() {
+        adapter.notifyDataSetChanged();
+    }
+
+    /**
+     * 板追加ダイアログを表示する.
+     */
     private void showAddDialog() {
         Timber.d("showAddDialog");
+        BoardCreateEditDialogFragment.show(getChildFragmentManager());
     }
 
+    @Override
+    public void onSucceeded() {
+        Timber.d("onSucceeded");
+    }
+
+    @Override
+    public void onCanceled() {
+        Timber.d("onCanceled");
+    }
 }

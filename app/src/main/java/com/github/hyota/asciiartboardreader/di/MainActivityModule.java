@@ -1,5 +1,6 @@
 package com.github.hyota.asciiartboardreader.di;
 
+import com.github.hyota.asciiartboardreader.presentation.boardlist.BoardCreateEditDialogFragment;
 import com.github.hyota.asciiartboardreader.presentation.boardlist.BoardListFragment;
 import com.github.hyota.asciiartboardreader.presentation.main.MainActivity;
 import com.github.hyota.asciiartboardreader.presentation.main.MainContract;
@@ -26,5 +27,9 @@ abstract class MainActivityModule {
     @ContributesAndroidInjector(modules = {BoardListFragmentModule.class})
     @FragmentScope
     abstract BoardListFragment contributeBoardListFragment();
+
+    @ContributesAndroidInjector(modules = {BoardCreateEditDialogFragmentModule.class})
+    @DialogFragmentScope
+    abstract BoardCreateEditDialogFragment contributeBoardCreateEditDialogFragment();
 
 }

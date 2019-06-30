@@ -26,10 +26,16 @@ public class BoardRecyclerViewAdapter extends RecyclerView.Adapter<BoardRecycler
     @NonNull
     private final List<Board> items;
     @Nullable
-    private final BoardListFragment.OnBoardListFragmentInteractionListener listener;
+    private final Listener listener;
+
+    public interface Listener {
+        void onClick(@NonNull Board board);
+
+        void onLongClick(@NonNull Board board);
+    }
 
     BoardRecyclerViewAdapter(@NonNull List<Board> items,
-                             @Nullable BoardListFragment.OnBoardListFragmentInteractionListener listener) {
+                             @Nullable Listener listener) {
         this.items = items;
         this.listener = listener;
     }
@@ -51,8 +57,14 @@ public class BoardRecyclerViewAdapter extends RecyclerView.Adapter<BoardRecycler
 
         holder.itemView.setOnClickListener(v -> {
             if (null != listener) {
-                listener.onSelectBoard(holder.item);
+                listener.onClick(holder.item);
             }
+        });
+        holder.itemView.setOnLongClickListener(v -> {
+            if (null != listener) {
+                listener.onLongClick(holder.item);
+            }
+            return true;
         });
     }
 

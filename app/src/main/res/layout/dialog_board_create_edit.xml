@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".presentation.boardlist.BoardCreateEditDialogFragment">
+
+    <com.github.hyota.asciiartboardreader.presentation.common.FloatLabelLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:floatLabelTextAppearance="@style/TextAppearance.FloatLabel"
+        app:floatLabelTrigger="text">
+
+        <EditText
+            android:id="@+id/url"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/hint_url"
+            android:inputType="textUri" />
+
+    </com.github.hyota.asciiartboardreader.presentation.common.FloatLabelLayout>
+
+    <com.github.hyota.asciiartboardreader.presentation.common.FloatLabelLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:floatLabelTextAppearance="@style/TextAppearance.FloatLabel"
+        app:floatLabelTrigger="text">
+
+        <EditText
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/hint_title"
+            android:inputType="text" />
+
+    </com.github.hyota.asciiartboardreader.presentation.common.FloatLabelLayout>
+
+</LinearLayout>

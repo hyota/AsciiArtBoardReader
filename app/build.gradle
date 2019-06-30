@@ -124,4 +124,11 @@ dependencies {
 
     // SwipyRefreshLayout Android Arsenal
     implementation 'com.github.orangegangsters:swipy:1.2.3@aar'
+
+    // TokenAutoComplete
+    implementation "com.splitwise:tokenautocomplete:3.0.1@aar"
+
+    // FloatLabelLayout.java
+    // https://gist.github.com/chrisbanes/11247418
+    // https://gist.github.com/jromero/233cfd8ef22a8b8c29ea
 }
