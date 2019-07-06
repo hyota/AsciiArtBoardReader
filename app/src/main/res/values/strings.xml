@@ -10,15 +10,22 @@
 
     <!-- 板一覧 -->
     <string name="title_board_list">板一覧</string>
+    <string name="menu_boar_list_add">追加</string>
+    <string name="popup_menu_board_list_item_edit">編集</string>
+    <string name="popup_menu_board_list_item_delete">削除</string>
 
     <!-- 板編集 -->
-    <string name="title_board_create">板追加</string>
+    <string name="title_board_add">板追加</string>
     <string name="title_board_edit">板編集</string>
     <string name="hint_url">URL：http://xxx.xxx.xxx&#8230;</string>
     <string name="hint_title">板名：○○板</string>
     <string name="button_get">取得</string>
     <string name="error_duplication">URLまたは板名が既に登録されています</string>
     <string name="error_invalidation">不正なURLまたは板名です</string>
+
+    <!-- 板削除 -->
+    <string name="title_board_delete">板削除</string>
+    <string name="message_board_delete">削除してよろしいですか？（履歴、お気に入り情報も削除されます）</string>
 
     <!-- スレッド一覧 -->
     <string name="label_count">レス：</string>

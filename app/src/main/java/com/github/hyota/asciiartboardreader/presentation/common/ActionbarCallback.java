@@ -3,9 +3,9 @@ package com.github.hyota.asciiartboardreader.presentation.common;
 import androidx.annotation.NonNull;
 
 /**
- * FragmentからToolbarへ悪世するためのコールバック.
+ * FragmentからToolbarへアクセスするためのコールバック.
  */
-public interface ToolbarCallback {
+public interface ActionbarCallback {
 
     /**
      * タイトルを設定する.

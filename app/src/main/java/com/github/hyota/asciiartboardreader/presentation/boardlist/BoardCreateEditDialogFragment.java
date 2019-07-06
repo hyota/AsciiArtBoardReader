@@ -104,7 +104,7 @@ public class BoardCreateEditDialogFragment extends DialogFragment implements Boa
         }
 
         AlertDialog alertDialog = new AlertDialog.Builder(context)
-                .setTitle(target == null ? R.string.title_board_create : R.string.title_board_edit)
+                .setTitle(target == null ? R.string.title_board_add : R.string.title_board_edit)
                 .setView(view)
                 .setPositiveButton(android.R.string.ok, (dialog, which) -> {
                     if (target == null) {

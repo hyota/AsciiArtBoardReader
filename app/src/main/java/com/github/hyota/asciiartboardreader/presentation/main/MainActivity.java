@@ -2,7 +2,6 @@ package com.github.hyota.asciiartboardreader.presentation.main;
 
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -21,7 +20,7 @@ import com.github.hyota.asciiartboardreader.domain.entity.Board;
 import com.github.hyota.asciiartboardreader.presentation.boardlist.BoardListFragment;
 import com.github.hyota.asciiartboardreader.presentation.common.BaseActivity;
 import com.github.hyota.asciiartboardreader.presentation.common.FloatingActionButtonCallback;
-import com.github.hyota.asciiartboardreader.presentation.common.ToolbarCallback;
+import com.github.hyota.asciiartboardreader.presentation.common.ActionbarCallback;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 
@@ -37,7 +36,7 @@ import timber.log.Timber;
 
 public class MainActivity extends BaseActivity implements MainContract.View,
         HasSupportFragmentInjector, NavigationView.OnNavigationItemSelectedListener,
-        ToolbarCallback, FloatingActionButtonCallback,
+        ActionbarCallback, FloatingActionButtonCallback,
         BoardListFragment.OnBoardListFragmentInteractionListener {
     @Inject
     DispatchingAndroidInjector<Fragment> fragmentInjector;
@@ -51,6 +50,7 @@ public class MainActivity extends BaseActivity implements MainContract.View,
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setSupportActionBar(toolbar);
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -87,28 +87,6 @@ public class MainActivity extends BaseActivity implements MainContract.View,
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
@@ -139,7 +117,7 @@ public class MainActivity extends BaseActivity implements MainContract.View,
 
     @Override
     public void setTitle(@NonNull String title) {
-        toolbar.setTitle(title);
+        Objects.requireNonNull(getSupportActionBar()).setTitle(title);
     }
 
     @Override

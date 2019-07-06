@@ -8,11 +8,12 @@ import android.os.Bundle;
 import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
+
+import com.github.hyota.asciiartboardreader.domain.value.AlertDialogRequestCode;
 
 import java.util.Objects;
 
@@ -30,7 +31,8 @@ public final class AlertDialogFragment extends DialogFragment {
          * @param resultCode  DialogInterface.BUTTON_(POSI|NEGA)TIVE 若しくはリストの position
          * @param params      AlertDialogFragment に受渡した引数
          */
-        void onAlertDialogSucceeded(int requestCode, int resultCode, Bundle params);
+        void onAlertDialogSucceeded(@Nullable AlertDialogRequestCode requestCode, int resultCode,
+                                    Bundle params);
 
         /**
          * AlertDialogFragment がキャンセルされた時に呼ばれる.
@@ -38,7 +40,7 @@ public final class AlertDialogFragment extends DialogFragment {
          * @param requestCode AlertDialogFragment 実行時 requestCode
          * @param params      AlertDialogFragment に受渡した引数
          */
-        void onAlertDialogCancelled(int requestCode, Bundle params);
+        void onAlertDialogCancelled(@Nullable AlertDialogRequestCode requestCode, Bundle params);
     }
 
     /**
@@ -46,11 +48,12 @@ public final class AlertDialogFragment extends DialogFragment {
      */
     public static class Builder {
 
-        /** Activity. */
-        final AppCompatActivity activity;
-
-        /** 親 Fragment. */
-        final Fragment parentFragment;
+        /** Context */
+        @NonNull
+        final Context context;
+        /** FragmentManage. */
+        @NonNull
+        final FragmentManager fm;
 
         /** タイトル. */
         String title;
@@ -68,7 +71,7 @@ public final class AlertDialogFragment extends DialogFragment {
         String negativeLabel;
 
         /** リクエストコード. 親 Fragment 側の戻りで受け取る. */
-        int requestCode = -1;
+        AlertDialogRequestCode requestCode = null;
 
         /** リスナに受け渡す任意のパラメータ. */
         Bundle params;
@@ -80,23 +83,14 @@ public final class AlertDialogFragment extends DialogFragment {
         boolean cancelable = true;
 
         /**
-         * コンストラクタ. Activity 上から生成する場合.
+         * コンストラクタ.
          *
-         * @param activity 呼び出し元Activity
+         * @param context Context
+         * @param fm      FragmentManager
          */
-        public <A extends AppCompatActivity & Listener> Builder(@NonNull final A activity) {
-            this.activity = activity;
-            parentFragment = null;
-        }
-
-        /**
-         * コンストラクタ. Fragment 上から生成する場合.
-         *
-         * @param parentFragment 親 Fragment
-         */
-        public <F extends Fragment & Listener> Builder(@NonNull final F parentFragment) {
-            this.parentFragment = parentFragment;
-            activity = null;
+        public Builder(@NonNull Context context, @NonNull FragmentManager fm) {
+            this.fm = fm;
+            this.context = context;
         }
 
         /**
@@ -117,7 +111,7 @@ public final class AlertDialogFragment extends DialogFragment {
          * @return Builder
          */
         public Builder title(@StringRes final int title) {
-            return title(getContext().getString(title));
+            return title(context.getString(title));
         }
 
         /**
@@ -138,7 +132,7 @@ public final class AlertDialogFragment extends DialogFragment {
          * @return Builder
          */
         public Builder message(@StringRes final int message) {
-            return message(getContext().getString(message));
+            return message(context.getString(message));
         }
 
         /**
@@ -170,7 +164,7 @@ public final class AlertDialogFragment extends DialogFragment {
          * @return Builder
          */
         public Builder positive(@StringRes final int positiveLabel) {
-            return positive(getContext().getString(positiveLabel));
+            return positive(context.getString(positiveLabel));
         }
 
         /**
@@ -191,7 +185,7 @@ public final class AlertDialogFragment extends DialogFragment {
          * @return Builder
          */
         public Builder negative(@StringRes final int negativeLabel) {
-            return negative(getContext().getString(negativeLabel));
+            return negative(context.getString(negativeLabel));
         }
 
         /**
@@ -200,7 +194,7 @@ public final class AlertDialogFragment extends DialogFragment {
          * @param requestCode リクエストコード
          * @return Builder
          */
-        public Builder requestCode(final int requestCode) {
+        public Builder requestCode(final AlertDialogRequestCode requestCode) {
             this.requestCode = requestCode;
             return this;
         }
@@ -254,36 +248,12 @@ public final class AlertDialogFragment extends DialogFragment {
             }
 
             final AlertDialogFragment f = new AlertDialogFragment();
-            if (parentFragment != null) {
-                f.setTargetFragment(parentFragment, requestCode);
-            } else {
-                args.putInt("request_code", requestCode);
-            }
+            args.putSerializable("request_code", requestCode);
+
             f.setArguments(args);
-            if (parentFragment != null) {
-                f.show(parentFragment.getChildFragmentManager(), tag);
-            } else if (activity != null) {
-                f.show(activity.getSupportFragmentManager(), tag);
-            }
+            f.show(fm, tag);
         }
 
-        /**
-         * コンテキストを取得する. getString() 呼び出しの為.
-         *
-         * @return Context
-         */
-        private Context getContext() {
-            if (activity != null) {
-                return activity.getApplicationContext();
-            }
-            if (parentFragment != null) {
-                FragmentActivity activity = parentFragment.getActivity();
-                if (activity != null) {
-                    return activity.getApplicationContext();
-                }
-            }
-            throw new IllegalStateException("get context failed.");
-        }
     }
 
     /** Listener. */
@@ -314,7 +284,9 @@ public final class AlertDialogFragment extends DialogFragment {
         Bundle args = Objects.requireNonNull(getArguments());
         final DialogInterface.OnClickListener listener = (dialog, which) -> {
             dismiss();
-            this.listener.onAlertDialogSucceeded(getRequestCode(), which, args.getBundle("params"));
+            this.listener.onAlertDialogSucceeded(
+                    (AlertDialogRequestCode) args.getSerializable("request_code"), which,
+                    args.getBundle("params"));
         };
         final String title = args.getString("title");
         final String message = args.getString("message");
@@ -352,8 +324,11 @@ public final class AlertDialogFragment extends DialogFragment {
      *
      * @return requestCode
      */
-    private int getRequestCode() {
+    @Nullable
+    private AlertDialogRequestCode getRequestCode() {
         Bundle args = Objects.requireNonNull(getArguments());
-        return args.containsKey("request_code") ? args.getInt("request_code") : getTargetRequestCode();
+        return args.containsKey("request_code")
+                ? (AlertDialogRequestCode) args.getSerializable("request_code")
+                : AlertDialogRequestCode.ordinalOf(getTargetRequestCode());
     }
 }

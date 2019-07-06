@@ -126,7 +126,10 @@ dependencies {
     implementation 'com.github.orangegangsters:swipy:1.2.3@aar'
 
     // TokenAutoComplete
-    implementation "com.splitwise:tokenautocomplete:3.0.1@aar"
+    implementation 'com.splitwise:tokenautocomplete:3.0.1@aar'
+
+    // android-iconify
+    implementation 'com.joanzapata.iconify:android-iconify-fontawesome:2.2.2'
 
     // FloatLabelLayout.java
     // https://gist.github.com/chrisbanes/11247418

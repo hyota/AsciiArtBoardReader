@@ -23,7 +23,7 @@ public abstract class BaseFragment extends Fragment {
     private Unbinder unbinder;
     protected Context context;
     @Nullable
-    private ToolbarCallback toolbarCallback;
+    private ActionbarCallback actionbarCallback;
     @Nullable
     protected FloatingActionButtonCallback floatingActionButtonCallback;
 
@@ -32,8 +32,8 @@ public abstract class BaseFragment extends Fragment {
         AndroidSupportInjection.inject(this);
         super.onAttach(context);
         this.context = context;
-        if (context instanceof ToolbarCallback) {
-            this.toolbarCallback = (ToolbarCallback) context;
+        if (context instanceof ActionbarCallback) {
+            this.actionbarCallback = (ActionbarCallback) context;
         }
         if (context instanceof FloatingActionButtonCallback) {
             this.floatingActionButtonCallback = (FloatingActionButtonCallback) context;
@@ -51,8 +51,8 @@ public abstract class BaseFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        if (toolbarCallback != null) {
-            toolbarCallback.setTitle(getToolbarTitle());
+        if (actionbarCallback != null) {
+            actionbarCallback.setTitle(getToolbarTitle());
         }
     }
 
