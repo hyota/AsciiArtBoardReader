@@ -10,7 +10,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 
 import com.github.hyota.asciiartboardreader.R;
 import com.github.hyota.asciiartboardreader.ui.base.BaseActivity;
@@ -23,20 +22,19 @@ import dagger.android.DispatchingAndroidInjector;
 import dagger.android.support.HasSupportFragmentInjector;
 import lombok.NonNull;
 
-public class MainActivity extends BaseActivity implements MainContract.View, HasSupportFragmentInjector, NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends BaseActivity
+        implements HasSupportFragmentInjector, NavigationView.OnNavigationItemSelectedListener {
     @Inject
     DispatchingAndroidInjector<Fragment> fragmentInjector;
     @Inject
-    MainContract.Presenter presenter;
+    MainViewModel viewModel;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
-
         Toolbar toolbar = findViewById(R.id.toolbar);
-
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
@@ -45,12 +43,12 @@ public class MainActivity extends BaseActivity implements MainContract.View, Has
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        FragmentManager manager = getSupportFragmentManager();
-        if (manager.findFragmentByTag("main") == null) {
-            // 初回時には取得できないため初期化する
-//            manager.beginTransaction()
-//                    .add(R.id.container, BbsListFragment.newInstance(), "main")
-//                    .addToBackStack(null)
+        // 初期画面表示時はフラグメントを初期化
+        if (savedInstanceState == null) {
+            // TODO
+//            getSupportFragmentManager()
+//                    .beginTransaction()
+//                    .add(R.id.container, new MainFragment())
 //                    .commit();
         }
     }

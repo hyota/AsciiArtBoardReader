@@ -1,29 +1,22 @@
 package com.github.hyota.asciiartboardreader.di;
 
-import com.github.hyota.asciiartboardreader.di.scope.ActivityScope;
-import com.github.hyota.asciiartboardreader.ui.main.MainActivity;
-import com.github.hyota.asciiartboardreader.ui.main.MainContract;
-import com.github.hyota.asciiartboardreader.ui.main.MainPresenterImpl;
+import androidx.lifecycle.ViewModel;
 
+import com.github.hyota.asciiartboardreader.ui.main.MainViewModel;
+
+import dagger.Binds;
 import dagger.Module;
-import dagger.Provides;
+import dagger.multibindings.IntoMap;
 
 /**
  * MainActivityにインジェクトするインスタンス生成クラス.
  */
 @Module
-public class MainActivityModule {
+public abstract class MainActivityModule {
 
-    @ActivityScope
-    @Provides
-    MainContract.View provideView(MainActivity view) {
-        return view;
-    }
-
-    @ActivityScope
-    @Provides
-    MainContract.Presenter providePresenter(MainPresenterImpl presenter) {
-        return presenter;
-    }
+    @Binds
+    @IntoMap
+    @ViewModelKey(MainViewModel.class)
+    abstract ViewModel bindMainViewModel(MainViewModel viewModel);
 
 }

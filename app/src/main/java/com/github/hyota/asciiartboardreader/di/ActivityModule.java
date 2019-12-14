@@ -10,7 +10,7 @@ import dagger.android.ContributesAndroidInjector;
  * Activityのコンポーネント作成.
  */
 @Module
-abstract class ActivityModule {
+public abstract class ActivityModule {
 
     @ActivityScope
     @ContributesAndroidInjector(modules = {MainActivityModule.class})
