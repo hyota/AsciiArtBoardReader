@@ -1,6 +1,7 @@
 package com.github.hyota.asciiartboardreader.di;
 
-import com.github.hyota.asciiartboardreader.presentation.main.MainActivity;
+import com.github.hyota.asciiartboardreader.di.scope.ActivityScope;
+import com.github.hyota.asciiartboardreader.ui.main.MainActivity;
 
 import dagger.Module;
 import dagger.android.ContributesAndroidInjector;

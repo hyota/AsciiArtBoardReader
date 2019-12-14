@@ -1,4 +1,4 @@
-package com.github.hyota.asciiartboardreader.presentation.common;
+package com.github.hyota.asciiartboardreader.ui.base;
 
 import android.os.Bundle;
 

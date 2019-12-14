@@ -1,8 +1,9 @@
 package com.github.hyota.asciiartboardreader.di;
 
-import com.github.hyota.asciiartboardreader.presentation.main.MainActivity;
-import com.github.hyota.asciiartboardreader.presentation.main.MainContract;
-import com.github.hyota.asciiartboardreader.presentation.main.MainPresenterImpl;
+import com.github.hyota.asciiartboardreader.di.scope.ActivityScope;
+import com.github.hyota.asciiartboardreader.ui.main.MainActivity;
+import com.github.hyota.asciiartboardreader.ui.main.MainContract;
+import com.github.hyota.asciiartboardreader.ui.main.MainPresenterImpl;
 
 import dagger.Module;
 import dagger.Provides;

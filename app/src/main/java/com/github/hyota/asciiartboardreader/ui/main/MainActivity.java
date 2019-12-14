@@ -1,4 +1,4 @@
-package com.github.hyota.asciiartboardreader.presentation.main;
+package com.github.hyota.asciiartboardreader.ui.main;
 
 import android.os.Bundle;
 import android.view.Menu;
@@ -13,7 +13,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.github.hyota.asciiartboardreader.R;
-import com.github.hyota.asciiartboardreader.presentation.common.BaseActivity;
+import com.github.hyota.asciiartboardreader.ui.base.BaseActivity;
 import com.google.android.material.navigation.NavigationView;
 
 import javax.inject.Inject;

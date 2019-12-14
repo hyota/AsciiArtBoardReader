@@ -1,6 +1,6 @@
-package com.github.hyota.asciiartboardreader.presentation.main;
+package com.github.hyota.asciiartboardreader.ui.main;
 
-import com.github.hyota.asciiartboardreader.di.ActivityScope;
+import com.github.hyota.asciiartboardreader.di.scope.ActivityScope;
 
 import javax.annotation.Nonnull;
 import javax.inject.Inject;

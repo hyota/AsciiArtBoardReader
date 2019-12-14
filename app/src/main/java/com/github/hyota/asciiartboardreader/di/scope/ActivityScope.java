@@ -1,4 +1,4 @@
-package com.github.hyota.asciiartboardreader.di;
+package com.github.hyota.asciiartboardreader.di.scope;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
