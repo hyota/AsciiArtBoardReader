@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -76,8 +77,7 @@ public class BoardCreateEditDialogFragment extends DialogFragment implements Boa
         if (listener instanceof Listener) {
             this.listener = (Listener) listener;
         } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement Listener");
+            throw new RuntimeException(context.toString() + " must implement Listener");
         }
     }
 
@@ -103,22 +103,17 @@ public class BoardCreateEditDialogFragment extends DialogFragment implements Boa
             }
         }
 
-        AlertDialog alertDialog = new AlertDialog.Builder(context)
-                .setTitle(target == null ? R.string.title_board_add : R.string.title_board_edit)
-                .setView(view)
-                .setPositiveButton(android.R.string.ok, (dialog, which) -> {
-                    if (target == null) {
-                        presenter.save(url.getText().toString(), title.getText().toString());
-                    } else {
-                        presenter.save(target.getId(), url.getText().toString(), title.getText().toString());
-                    }
-                })
-                .setNegativeButton(android.R.string.cancel, (dialog, which) -> {
-                })
-                .setNeutralButton(R.string.button_get, (dialog, which) ->
-                        presenter.loadTitleFromServer(url.getText().toString()))
-                .create();
+        AlertDialog alertDialog = new AlertDialog.Builder(context).setTitle(target == null ? R.string.title_board_add : R.string.title_board_edit).setView(view).setPositiveButton(android.R.string.ok, (dialog, which) -> {
+            if (target == null) {
+                presenter.save(url.getText().toString(), title.getText().toString());
+            } else {
+                presenter.save(target.getId(), url.getText().toString(), title.getText().toString());
+            }
+        }).setNegativeButton(android.R.string.cancel, (dialog, which) -> {
+        }).setNeutralButton(R.string.button_get, (dialog, which) -> presenter.loadTitleFromServer(url.getText().toString())).create();
         alertDialog.setOnShowListener(dialog -> {
+
+            final Button positive = ((AlertDialog) dialog).getButton(DialogInterface.BUTTON_POSITIVE);
             url.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -130,10 +125,8 @@ public class BoardCreateEditDialogFragment extends DialogFragment implements Boa
 
                 @Override
                 public void afterTextChanged(Editable s) {
-                    ((AlertDialog) dialog).getButton(DialogInterface.BUTTON_POSITIVE)
-                            .setEnabled(!url.getText().toString().isEmpty() && !title.getText().toString().isEmpty());
-                    ((AlertDialog) dialog).getButton(DialogInterface.BUTTON_NEUTRAL)
-                            .setEnabled(!url.getText().toString().isEmpty());
+                    positive.setEnabled(!url.getText().toString().isEmpty() && !title.getText().toString().isEmpty());
+                    ((AlertDialog) dialog).getButton(DialogInterface.BUTTON_NEUTRAL).setEnabled(!url.getText().toString().isEmpty());
                 }
             });
             title.addTextChangedListener(new TextWatcher() {
@@ -149,8 +142,7 @@ public class BoardCreateEditDialogFragment extends DialogFragment implements Boa
 
                 @Override
                 public void afterTextChanged(Editable s) {
-                    ((AlertDialog) dialog).getButton(DialogInterface.BUTTON_POSITIVE)
-                            .setEnabled(!url.getText().toString().isEmpty() && !title.getText().toString().isEmpty());
+                    positive.setEnabled(!url.getText().toString().isEmpty() && !title.getText().toString().isEmpty());
                 }
             });
         });

@@ -19,8 +19,14 @@ public interface BoardCreateEditContract {
          */
         void setBoardTitle(@Nonnull String title);
 
+        /**
+         * 重複エラー
+         */
         void duplicatedError();
 
+        /**
+         * 不正な入力値
+         */
         void invalidateError();
 
     }
