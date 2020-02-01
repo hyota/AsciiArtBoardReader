@@ -1,13 +1,18 @@
 package com.github.hyota.asciiartboardreader.ui.main;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
+import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
@@ -16,10 +21,14 @@ import com.github.hyota.asciiartboardreader.R;
 import com.github.hyota.asciiartboardreader.model.entity.Bbs;
 import com.github.hyota.asciiartboardreader.ui.base.BaseActivity;
 import com.github.hyota.asciiartboardreader.ui.bbslist.BbsListFragment;
+import com.github.hyota.asciiartboardreader.ui.common.HasActionBar;
+import com.github.hyota.asciiartboardreader.ui.common.HasFloatingActionButton;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 
 import javax.inject.Inject;
 
+import butterknife.BindView;
 import dagger.android.AndroidInjector;
 import dagger.android.DispatchingAndroidInjector;
 import dagger.android.support.HasSupportFragmentInjector;
@@ -27,18 +36,21 @@ import timber.log.Timber;
 
 public class MainActivity extends BaseActivity
         implements HasSupportFragmentInjector, NavigationView.OnNavigationItemSelectedListener,
-        BbsListFragment.Listener {
+        HasActionBar, HasFloatingActionButton, BbsListFragment.Listener {
     @Inject
     DispatchingAndroidInjector<Fragment> fragmentInjector;
     @Inject
     MainViewModel viewModel;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+    @BindView(R.id.fab)
+    FloatingActionButton fab;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        Toolbar toolbar = findViewById(R.id.toolbar);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
@@ -121,6 +133,35 @@ public class MainActivity extends BaseActivity
     @Override
     public AndroidInjector<Fragment> supportFragmentInjector() {
         return fragmentInjector;
+    }
+
+    @Override
+    public void setToolbarTitle(@NonNull String title) {
+        toolbar.setTitle(title);
+    }
+
+    @Override
+    public void showFloatingActionButton() {
+        fab.show();
+    }
+
+    @Override
+    public void hideFloatingActionButton() {
+        fab.hide();
+    }
+
+    @Override
+    public void setFloatingActionButtonImageResource(@DrawableRes int resId) {
+        Drawable drawable = getDrawable(resId);
+        if (drawable != null) {
+            drawable.setTint(ContextCompat.getColor(this, android.R.color.white));
+            fab.setImageDrawable(drawable);
+        }
+    }
+
+    @Override
+    public void setFloatingActionButtonOnClickListener(@Nullable View.OnClickListener listener) {
+        fab.setOnClickListener(listener);
     }
 
     @Override

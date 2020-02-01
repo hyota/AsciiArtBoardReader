@@ -80,8 +80,28 @@ public class BbsListFragment extends BaseFragment {
         listener = null;
     }
 
+    @NonNull
+    @Override
+    protected String getActionBarTitle() {
+        return context.getString(R.string.bbs_list_title);
+    }
+
     @Override
     protected int getLayoutId() {
         return R.layout.fragment_bbs_list;
+    }
+
+    @Override
+    protected void initializeFloatingActionButton() {
+        if (hasFloatingActionButton != null) {
+            hasFloatingActionButton.setFloatingActionButtonImageResource(android.R.drawable.ic_input_add);
+            hasFloatingActionButton.setFloatingActionButtonOnClickListener(v -> {
+                // TODO
+                Timber.d("on click floating action button.");
+            });
+            hasFloatingActionButton.showFloatingActionButton();
+        } else {
+            Timber.w("%s is not implemented HasFloatingActionButton", context);
+        }
     }
 }
