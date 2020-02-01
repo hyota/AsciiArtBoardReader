@@ -8,6 +8,12 @@
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
 
+    <!-- 汎用 -->
+    <string name="error_dialog_title">エラー</string>
+
+    <!-- 板一覧 -->
+    <string name="bbs_list_load_error">板一覧の取得に失敗しました</string>
+
     <!-- 板編集 -->
     <string name="hint_url">URL：http://xxx.xxx.xxx&#8230;</string>
     <string name="hint_title">板名：○○板</string>

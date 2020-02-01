@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.widget.Toolbar;
@@ -12,7 +13,9 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
 import com.github.hyota.asciiartboardreader.R;
+import com.github.hyota.asciiartboardreader.model.entity.Bbs;
 import com.github.hyota.asciiartboardreader.ui.base.BaseActivity;
+import com.github.hyota.asciiartboardreader.ui.bbslist.BbsListFragment;
 import com.google.android.material.navigation.NavigationView;
 
 import javax.inject.Inject;
@@ -20,10 +23,11 @@ import javax.inject.Inject;
 import dagger.android.AndroidInjector;
 import dagger.android.DispatchingAndroidInjector;
 import dagger.android.support.HasSupportFragmentInjector;
-import lombok.NonNull;
+import timber.log.Timber;
 
 public class MainActivity extends BaseActivity
-        implements HasSupportFragmentInjector, NavigationView.OnNavigationItemSelectedListener {
+        implements HasSupportFragmentInjector, NavigationView.OnNavigationItemSelectedListener,
+        BbsListFragment.Listener {
     @Inject
     DispatchingAndroidInjector<Fragment> fragmentInjector;
     @Inject
@@ -45,17 +49,11 @@ public class MainActivity extends BaseActivity
 
         // 初期画面表示時はフラグメントを初期化
         if (savedInstanceState == null) {
-            // TODO
-//            getSupportFragmentManager()
-//                    .beginTransaction()
-//                    .add(R.id.container, new MainFragment())
-//                    .commit();
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .add(R.id.container, BbsListFragment.newInstance())
+                    .commit();
         }
-    }
-
-    @Override
-    protected int getLayoutRes() {
-        return R.layout.activity_main;
     }
 
     @Override
@@ -116,8 +114,19 @@ public class MainActivity extends BaseActivity
     }
 
     @Override
+    protected int getLayoutRes() {
+        return R.layout.activity_main;
+    }
+
+    @Override
     public AndroidInjector<Fragment> supportFragmentInjector() {
         return fragmentInjector;
+    }
+
+    @Override
+    public void onSelectBbs(@NonNull Bbs bbs) {
+        // TODO
+        Timber.d("select %s, %s", bbs.getName(), bbs.getUrl());
     }
 
 }
