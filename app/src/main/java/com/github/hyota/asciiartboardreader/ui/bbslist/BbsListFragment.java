@@ -8,25 +8,24 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.hyota.asciiartboardreader.R;
+import com.github.hyota.asciiartboardreader.databinding.FragmentBbsListBinding;
 import com.github.hyota.asciiartboardreader.model.entity.Bbs;
 import com.github.hyota.asciiartboardreader.ui.base.BaseFragment;
 import com.github.hyota.asciiartboardreader.ui.common.EmptyReciyclerViewAdapter;
 
 import javax.inject.Inject;
 
-import butterknife.BindView;
 import timber.log.Timber;
 
 public class BbsListFragment extends BaseFragment {
 
     @Inject
     BbsListViewModel viewModel;
-    @BindView(R.id.list)
-    RecyclerView recyclerView;
+    private FragmentBbsListBinding binding;
     private Listener listener;
 
     public interface Listener {
@@ -44,27 +43,6 @@ public class BbsListFragment extends BaseFragment {
     }
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
-        View view = super.onCreateView(inflater, container, savedInstanceState);
-        recyclerView.setLayoutManager(new LinearLayoutManager(context));
-        recyclerView.setAdapter(new EmptyReciyclerViewAdapter());
-        viewModel.getBbsList().observe(this,
-                bbsList -> {
-                    Timber.d("bbb");
-                    if (bbsList.isSuccess()) {
-                        BbsListRecyclerViewAdapter adapter =
-                                new BbsListRecyclerViewAdapter(bbsList.getData(), item -> listener.onSelectBbs(item));
-                        recyclerView.setAdapter(adapter);
-                    } else {
-                        showErrorToast(R.string.bbs_list_load_error);
-                    }
-                });
-        return view;
-    }
-
-
-    @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         if (context instanceof Listener) {
@@ -72,6 +50,27 @@ public class BbsListFragment extends BaseFragment {
         } else {
             Timber.w("%s is not implemented Listener.", context);
         }
+    }
+
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_bbs_list, container, false);
+        return binding.getRoot();
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        binding.list.setLayoutManager(new LinearLayoutManager(context));
+        binding.list.setAdapter(new EmptyReciyclerViewAdapter());
+        viewModel.getBbsList().observe(this, bbsList -> {
+            if (bbsList.isSuccess()) {
+                BbsListRecyclerViewAdapter adapter = new BbsListRecyclerViewAdapter(bbsList.getData(), item -> listener.onSelectBbs(item));
+                binding.list.setAdapter(adapter);
+            } else {
+                showErrorToast(R.string.bbs_list_load_error);
+            }
+        });
     }
 
     @Override
@@ -95,10 +94,7 @@ public class BbsListFragment extends BaseFragment {
     protected void initializeFloatingActionButton() {
         if (hasFloatingActionButton != null) {
             hasFloatingActionButton.setFloatingActionButtonImageResource(android.R.drawable.ic_input_add);
-            hasFloatingActionButton.setFloatingActionButtonOnClickListener(v -> {
-                // TODO
-                Timber.d("on click floating action button.");
-            });
+            hasFloatingActionButton.setFloatingActionButtonOnClickListener(v -> BbsAddEditDialogFragment.show(getChildFragmentManager()));
             hasFloatingActionButton.showFloatingActionButton();
         } else {
             Timber.w("%s is not implemented HasFloatingActionButton", context);

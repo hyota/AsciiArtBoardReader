@@ -17,7 +17,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import lombok.experimental.Tolerate;
 
-public class CommonDialogFragment extends DialogFragment {
+public class AlertDialogFragment extends DialogFragment {
 
     /**
      * 何か処理が起こった場合にコールバックされるリスナ.
@@ -27,23 +27,23 @@ public class CommonDialogFragment extends DialogFragment {
         /**
          * positiveButton, NegativeButton, リスト選択など行われた際に呼ばれる.
          *
-         * @param requestCode MyDialogFragment 実行時 requestCode
+         * @param requestCode 実行時 requestCode
          * @param resultCode  DialogInterface.BUTTON_(POSI|NEGA)TIVE 若しくはリストの position
-         * @param params      MyDialogFragment に受渡した引数
+         * @param params      受渡した引数
          */
-        void onCommonDialogSucceeded(int requestCode, int resultCode, Bundle params);
+        void onAlertDialogSucceeded(int requestCode, int resultCode, Bundle params);
 
         /**
          * キャンセルされた時に呼ばれる.
          *
-         * @param requestCode MyDialogFragment 実行時 requestCode
-         * @param params      MyDialogFragment に受渡した引数
+         * @param requestCode 実行時 requestCode
+         * @param params      受渡した引数
          */
-        void onCommonDialogCancelled(int requestCode, Bundle params);
+        void onAlertDialogCancelled(int requestCode, Bundle params);
     }
 
     /**
-     * MyDialogFragment を Builder パターンで生成する為のクラス.
+     * Builder パターンで生成する為のクラス.
      */
     public static class Builder {
 
@@ -180,7 +180,7 @@ public class CommonDialogFragment extends DialogFragment {
                 args.putBundle("params", params);
             }
 
-            final CommonDialogFragment f = new CommonDialogFragment();
+            final AlertDialogFragment f = new AlertDialogFragment();
             if (mParentFragment != null) {
                 f.setTargetFragment(mParentFragment, requestCode);
             } else {
@@ -231,7 +231,7 @@ public class CommonDialogFragment extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         final DialogInterface.OnClickListener listener = (dialog, which) -> {
             dismiss();
-            mCallback.onCommonDialogSucceeded(getRequestCode(), which, getArguments().getBundle("params"));
+            mCallback.onAlertDialogSucceeded(getRequestCode(), which, getArguments().getBundle("params"));
         };
         final String title = getArguments().getString("title");
         final String message = getArguments().getString("message");
@@ -260,7 +260,7 @@ public class CommonDialogFragment extends DialogFragment {
 
     @Override
     public void onCancel(@NonNull DialogInterface dialog) {
-        mCallback.onCommonDialogCancelled(getRequestCode(), getArguments().getBundle("params"));
+        mCallback.onAlertDialogCancelled(getRequestCode(), getArguments().getBundle("params"));
     }
 
     /**

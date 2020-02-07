@@ -4,13 +4,15 @@ import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import java.io.Serializable;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
 @Entity
 @AllArgsConstructor
-public class Bbs {
+public class Bbs implements Serializable {
 
     public static final long INITIAL_ID = -1;
 
@@ -25,4 +27,5 @@ public class Bbs {
         this.name = name;
         this.url = url;
     }
+
 }

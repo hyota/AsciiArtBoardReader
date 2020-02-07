@@ -15,10 +15,12 @@
     <string name="bbs_list_title">板一覧</string>
     <string name="bbs_list_load_error">板一覧の取得に失敗しました</string>
 
-    <!-- 板編集 -->
-    <string name="hint_url">URL：http://xxx.xxx.xxx&#8230;</string>
-    <string name="hint_title">板名：○○板</string>
-    <string name="button_get">取得</string>
+    <!-- 板追加・編集ダイアログ -->
+    <string name="bbs_add_title">板追加</string>
+    <string name="bbs_edit_title">板編集</string>
+    <string name="bbs_add_edit_url_hint">URL：http://xxx.xxx.xxx&#8230;</string>
+    <string name="bbs_add_edit_title_get">板名取得</string>
+    <string name="bbs_add_edit_title_hint">板名：○○板</string>
 
     <!-- スレッド一覧 -->
     <string name="label_count">レス：</string>

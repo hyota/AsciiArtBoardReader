@@ -2,33 +2,29 @@ package com.github.hyota.asciiartboardreader.ui.base;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Toast;
 
 import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
+import androidx.databinding.ViewDataBinding;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModel;
 
 import com.github.hyota.asciiartboardreader.R;
-import com.github.hyota.asciiartboardreader.ui.common.CommonDialogFragment;
-import com.github.hyota.asciiartboardreader.ui.common.HasActionBar;
-import com.github.hyota.asciiartboardreader.ui.common.HasFloatingActionButton;
+import com.github.hyota.asciiartboardreader.ui.common.AlertDialogFragment;
 
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 import dagger.android.support.AndroidSupportInjection;
 
-public abstract class BaseFragment extends Fragment implements CommonDialogFragment.Callback {
+public abstract class BaseFragment<VM extends ViewModel, VDB extends ViewDataBinding> extends Fragment implements AlertDialogFragment.Callback {
 
     protected Context context;
-    private Unbinder unbinder;
 
     @Nullable
     protected HasFloatingActionButton hasFloatingActionButton;
+    @Nullable
+    protected HasActionBar hasActionBar;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -36,26 +32,20 @@ public abstract class BaseFragment extends Fragment implements CommonDialogFragm
         super.onAttach(context);
         this.context = context;
         if (context instanceof HasActionBar) {
-            ((HasActionBar) context).setToolbarTitle(getActionBarTitle());
+            hasActionBar = (HasActionBar) context;
         }
         if (context instanceof HasFloatingActionButton) {
             hasFloatingActionButton = (HasFloatingActionButton) context;
         }
     }
 
-    @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(getLayoutId(), container, false);
-        unbinder = ButterKnife.bind(this, view);
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if (hasActionBar != null) {
+            hasActionBar.setToolbarTitle(getActionBarTitle());
+        }
         initializeFloatingActionButton();
-        return view;
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        unbinder.unbind();
     }
 
     @NonNull
@@ -65,12 +55,12 @@ public abstract class BaseFragment extends Fragment implements CommonDialogFragm
     protected abstract int getLayoutId();
 
     @Override
-    public void onCommonDialogSucceeded(int requestCode, int resultCode, Bundle params) {
+    public void onAlertDialogSucceeded(int requestCode, int resultCode, Bundle params) {
         // NOOP
     }
 
     @Override
-    public void onCommonDialogCancelled(int requestCode, Bundle params) {
+    public void onAlertDialogCancelled(int requestCode, Bundle params) {
         // NOOP
     }
 
@@ -82,7 +72,7 @@ public abstract class BaseFragment extends Fragment implements CommonDialogFragm
     }
 
     protected void showErrorDialog(@NonNull String message) {
-        new CommonDialogFragment.Builder(this)
+        new AlertDialogFragment.Builder(this)
                 .setTitle(R.string.error_dialog_title)
                 .setMessage(message)
                 .setCancelable(true)

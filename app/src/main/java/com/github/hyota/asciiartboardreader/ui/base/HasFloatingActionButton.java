@@ -1,4 +1,4 @@
-package com.github.hyota.asciiartboardreader.ui.common;
+package com.github.hyota.asciiartboardreader.ui.base;
 
 import android.view.View;
 

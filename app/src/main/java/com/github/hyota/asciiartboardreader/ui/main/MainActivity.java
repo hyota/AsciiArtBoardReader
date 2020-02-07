@@ -9,26 +9,24 @@ import android.view.View;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
+import androidx.databinding.DataBindingUtil;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
 import com.github.hyota.asciiartboardreader.R;
+import com.github.hyota.asciiartboardreader.databinding.ActivityMainBinding;
 import com.github.hyota.asciiartboardreader.model.entity.Bbs;
 import com.github.hyota.asciiartboardreader.ui.base.BaseActivity;
+import com.github.hyota.asciiartboardreader.ui.base.HasActionBar;
+import com.github.hyota.asciiartboardreader.ui.base.HasFloatingActionButton;
 import com.github.hyota.asciiartboardreader.ui.bbslist.BbsListFragment;
-import com.github.hyota.asciiartboardreader.ui.common.HasActionBar;
-import com.github.hyota.asciiartboardreader.ui.common.HasFloatingActionButton;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 
 import javax.inject.Inject;
 
-import butterknife.BindView;
 import dagger.android.AndroidInjector;
 import dagger.android.DispatchingAndroidInjector;
 import dagger.android.support.HasSupportFragmentInjector;
@@ -41,23 +39,19 @@ public class MainActivity extends BaseActivity
     DispatchingAndroidInjector<Fragment> fragmentInjector;
     @Inject
     MainViewModel viewModel;
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
-    @BindView(R.id.fab)
-    FloatingActionButton fab;
+    ActivityMainBinding binding;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
+                this, binding.drawerLayout, binding.appBarMain.toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        binding.drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+        binding.navView.setNavigationItemSelectedListener(this);
 
         // 初期画面表示時はフラグメントを初期化
         if (savedInstanceState == null) {
@@ -66,6 +60,12 @@ public class MainActivity extends BaseActivity
                     .add(R.id.container, BbsListFragment.newInstance())
                     .commit();
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Timber.d("onDestroy");
     }
 
     @Override
@@ -126,28 +126,23 @@ public class MainActivity extends BaseActivity
     }
 
     @Override
-    protected int getLayoutRes() {
-        return R.layout.activity_main;
-    }
-
-    @Override
     public AndroidInjector<Fragment> supportFragmentInjector() {
         return fragmentInjector;
     }
 
     @Override
     public void setToolbarTitle(@NonNull String title) {
-        toolbar.setTitle(title);
+        binding.appBarMain.toolbar.setTitle(title);
     }
 
     @Override
     public void showFloatingActionButton() {
-        fab.show();
+        binding.appBarMain.fab.show();
     }
 
     @Override
     public void hideFloatingActionButton() {
-        fab.hide();
+        binding.appBarMain.fab.hide();
     }
 
     @Override
@@ -155,13 +150,13 @@ public class MainActivity extends BaseActivity
         Drawable drawable = getDrawable(resId);
         if (drawable != null) {
             drawable.setTint(ContextCompat.getColor(this, android.R.color.white));
-            fab.setImageDrawable(drawable);
+            binding.appBarMain.fab.setImageDrawable(drawable);
         }
     }
 
     @Override
     public void setFloatingActionButtonOnClickListener(@Nullable View.OnClickListener listener) {
-        fab.setOnClickListener(listener);
+        binding.appBarMain.fab.setOnClickListener(listener);
     }
 
     @Override
