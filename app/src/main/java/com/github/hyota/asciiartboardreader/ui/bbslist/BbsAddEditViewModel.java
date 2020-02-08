@@ -12,15 +12,16 @@ import com.github.hyota.asciiartboardreader.model.entity.Bbs;
 import javax.inject.Inject;
 
 import lombok.Getter;
+import lombok.Setter;
 
 public class BbsAddEditViewModel extends ViewModel {
 
     @Getter
     @NonNull
-    private MutableLiveData<String> name = new MutableLiveData<>();
+    private MutableLiveData<String> name = new MutableLiveData<>("");
     @Getter
     @NonNull
-    private MutableLiveData<String> url = new MutableLiveData<>();
+    private MutableLiveData<String> url = new MutableLiveData<>("");
     @Getter
     @NonNull
     private MediatorLiveData<Boolean> canSubmit = new MediatorLiveData<>();
@@ -39,6 +40,12 @@ public class BbsAddEditViewModel extends ViewModel {
             name.postValue(bbs.getName());
             url.postValue(bbs.getUrl());
         }
+    }
+
+    public void create() {
+    }
+
+    public void update() {
     }
 
     private boolean isInputted() {

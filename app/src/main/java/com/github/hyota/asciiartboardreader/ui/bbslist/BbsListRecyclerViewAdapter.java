@@ -10,18 +10,17 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.github.hyota.asciiartboardreader.R;
 import com.github.hyota.asciiartboardreader.databinding.ItemBbsBinding;
 import com.github.hyota.asciiartboardreader.model.entity.Bbs;
-import com.github.hyota.asciiartboardreader.ui.base.OnItemSelectListener;
+import com.github.hyota.asciiartboardreader.ui.base.ListItemInteractionListener;
 import com.github.hyota.asciiartboardreader.ui.common.UpdatableRecyclerViewAdapter;
 
 import java.util.List;
 
 public class BbsListRecyclerViewAdapter extends UpdatableRecyclerViewAdapter<Bbs, BbsListRecyclerViewAdapter.ViewHolder> {
 
-    @NonNull
-    private final OnItemSelectListener<Bbs> listener;
+    private ListItemInteractionListener<Bbs> listener;
 
     public BbsListRecyclerViewAdapter(@NonNull List<Bbs> itemList,
-                                      @NonNull OnItemSelectListener<Bbs> listener) {
+                                      @NonNull ListItemInteractionListener<Bbs> listener) {
         super(itemList);
         this.listener = listener;
     }
@@ -37,7 +36,11 @@ public class BbsListRecyclerViewAdapter extends UpdatableRecyclerViewAdapter<Bbs
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
         Bbs bbs = itemList.get(position);
         holder.binding.setBbs(bbs);
-        holder.itemView.setOnClickListener(v -> listener.onItemSelect(holder.binding.getBbs()));
+        holder.itemView.setOnClickListener(v -> listener.onItemClick(holder.binding.getBbs()));
+        holder.itemView.setOnLongClickListener(v -> {
+            listener.onItemLongClick(holder.binding.getBbs());
+            return true;
+        });
     }
 
     @Override

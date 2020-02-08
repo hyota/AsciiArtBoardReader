@@ -19,6 +19,8 @@ import com.github.hyota.asciiartboardreader.R;
 import com.github.hyota.asciiartboardreader.databinding.DialogBbsAddBinding;
 import com.github.hyota.asciiartboardreader.model.entity.Bbs;
 
+import java.util.Objects;
+
 import javax.inject.Inject;
 
 import dagger.android.support.AndroidSupportInjection;
@@ -30,8 +32,7 @@ public abstract class BbsAddEditDialogFragment extends DialogFragment {
 
     @Inject
     BbsAddEditViewModel viewModel;
-    DialogBbsAddBinding binding;
-
+    private DialogBbsAddBinding binding;
     protected Context context;
 
     public static void show(@NonNull FragmentManager fragmentManager) {
@@ -58,6 +59,8 @@ public abstract class BbsAddEditDialogFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(LayoutInflater.from(context), R.layout.dialog_bbs_add, null, false);
+        binding.setViewModel(viewModel);
+        binding.setLifecycleOwner(this);
         AlertDialog alertDialog = new AlertDialog.Builder(context)
                 .setTitle(getTitle())
                 .setView(binding.getRoot())
@@ -65,28 +68,23 @@ public abstract class BbsAddEditDialogFragment extends DialogFragment {
                 .setNeutralButton(android.R.string.cancel, (dialog, which) -> {
                     // NOOP
                 })
-                .setCancelable(true)
                 .create();
         alertDialog.setOnShowListener(dialog -> {
             Button positive = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
-            positive.setOnClickListener(v -> {
-                // TODO
-            });
+            positive.setOnClickListener(v -> onOkClick());
             viewModel.getCanSubmit().observe(this, positive::setEnabled);
-            Bbs initialValue = null;
-            Bundle args = getArguments();
-            if (args != null) {
-                initialValue = (Bbs) args.getSerializable(ARG_BBS);
-            }
-            if (initialValue != null) {
-                viewModel.setInitialValue(initialValue);
-            }
+            setInitializeValue();
         });
+        setCancelable(true);
         return alertDialog;
     }
 
     @StringRes
     protected abstract int getTitle();
+
+    protected abstract void setInitializeValue();
+
+    protected abstract void onOkClick();
 
     public static class BbsAddDialogFragment extends BbsAddEditDialogFragment {
 
@@ -95,6 +93,15 @@ public abstract class BbsAddEditDialogFragment extends DialogFragment {
             return R.string.bbs_add_title;
         }
 
+        @Override
+        protected void setInitializeValue() {
+            // NOOP
+        }
+
+        @Override
+        protected void onOkClick() {
+            viewModel.create();
+        }
     }
 
     public static class BbsEditDialogFragment extends BbsAddEditDialogFragment {
@@ -104,6 +111,17 @@ public abstract class BbsAddEditDialogFragment extends DialogFragment {
             return R.string.bbs_edit_title;
         }
 
+        @Override
+        protected void setInitializeValue() {
+            Bundle args = Objects.requireNonNull(getArguments());
+            Bbs initialValue = (Bbs) Objects.requireNonNull(args.getSerializable(ARG_BBS));
+            viewModel.setInitialValue(initialValue);
+        }
+
+        @Override
+        protected void onOkClick() {
+            viewModel.update();
+        }
     }
 
 

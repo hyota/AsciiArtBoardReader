@@ -26,7 +26,6 @@ public class BbsLoadUseCase {
     public void execute(@NonNull Callback<List<Bbs>> callback, @NonNull Runnable onFail) {
         new Thread(() -> {
             try {
-                Timber.d("aaa");
                 callback.apply(bbsRepository.findAll());
             } catch (Exception e) {
                 log.error(e.getMessage(), e);

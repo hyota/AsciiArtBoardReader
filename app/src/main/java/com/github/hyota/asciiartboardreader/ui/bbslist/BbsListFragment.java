@@ -15,6 +15,7 @@ import com.github.hyota.asciiartboardreader.R;
 import com.github.hyota.asciiartboardreader.databinding.FragmentBbsListBinding;
 import com.github.hyota.asciiartboardreader.model.entity.Bbs;
 import com.github.hyota.asciiartboardreader.ui.base.BaseFragment;
+import com.github.hyota.asciiartboardreader.ui.base.ListItemInteractionListener;
 import com.github.hyota.asciiartboardreader.ui.common.EmptyReciyclerViewAdapter;
 
 import javax.inject.Inject;
@@ -55,6 +56,7 @@ public class BbsListFragment extends BaseFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_bbs_list, container, false);
+        binding.setLifecycleOwner(this);
         return binding.getRoot();
     }
 
@@ -65,7 +67,18 @@ public class BbsListFragment extends BaseFragment {
         binding.list.setAdapter(new EmptyReciyclerViewAdapter());
         viewModel.getBbsList().observe(this, bbsList -> {
             if (bbsList.isSuccess()) {
-                BbsListRecyclerViewAdapter adapter = new BbsListRecyclerViewAdapter(bbsList.getData(), item -> listener.onSelectBbs(item));
+                BbsListRecyclerViewAdapter adapter = new BbsListRecyclerViewAdapter(bbsList.getData(),
+                        new ListItemInteractionListener<Bbs>() {
+                            @Override
+                            public void onItemClick(@NonNull Bbs bbs) {
+                                listener.onSelectBbs(bbs);
+                            }
+
+                            @Override
+                            public void onItemLongClick(@NonNull Bbs bbs) {
+                                BbsAddEditDialogFragment.show(getChildFragmentManager(), bbs);
+                            }
+                        });
                 binding.list.setAdapter(adapter);
             } else {
                 showErrorToast(R.string.bbs_list_load_error);

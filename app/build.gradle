@@ -43,14 +43,14 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok:1.18.8'
 
     // ViewModel and LiveData
-    def lifecycle_version = "2.1.0"
+    def lifecycle_version = "2.2.0"
     implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
     annotationProcessor "androidx.lifecycle:lifecycle-compiler:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycle_version"
-    testImplementation "androidx.arch.core:core-testing:$lifecycle_version"
+    testImplementation "androidx.arch.core:core-testing:2.1.0"
 
     // Room
-    def room_version = "2.2.2"
+    def room_version = "2.2.3"
     implementation "androidx.room:room-runtime:$room_version"
     annotationProcessor "androidx.room:room-compiler:$room_version"
 
@@ -81,32 +81,34 @@ dependencies {
     implementation group: 'org.slf4j', name: 'jul-to-slf4j', version: '1.7.25'
 
     // Retrofit
-    implementation 'com.squareup.retrofit2:retrofit:2.6.0'
+    implementation 'com.squareup.retrofit2:retrofit:2.7.1'
 
     // OkHttp
-    implementation 'com.squareup.okhttp3:okhttp:4.0.0'
+    implementation 'com.squareup.okhttp3:okhttp:4.3.1'
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.3.1'
 
     // Okio
-    implementation 'com.squareup.okio:okio:2.2.2'
+    implementation 'com.squareup.okio:okio:2.4.1'
 
     // ThreeTenABP
-    implementation 'com.jakewharton.threetenabp:threetenabp:1.2.1'
+    implementation 'com.jakewharton.threetenabp:threetenabp:1.2.2'
 
     // Gson
-    implementation 'com.google.code.gson:gson:2.8.5'
+    implementation 'com.google.code.gson:gson:2.8.6'
 
     // Lightweight-Stream-API
     implementation 'com.annimon:stream:1.2.1'
 
     // Juniversalchardet
-    implementation 'com.github.albfernandez:juniversalchardet:2.0.3'
+    implementation 'com.github.albfernandez:juniversalchardet:2.3.0'
 
     // Calligraphy
-    implementation 'uk.co.chrisjenx:calligraphy:2.3.0'
+    implementation 'io.github.inflationx:calligraphy3:3.1.1'
+    implementation 'io.github.inflationx:viewpump:2.0.3'
 
     // LeakCanary
     // debugImplementation because LeakCanary should only run in debug builds.
-    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.0-alpha-2'
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.2'
 
     // Chuck
     debugImplementation 'com.readystatesoftware.chuck:library:1.1.0'

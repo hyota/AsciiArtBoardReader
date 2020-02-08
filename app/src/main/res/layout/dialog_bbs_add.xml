@@ -29,7 +29,7 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/bbs_add_edit_url_hint"
                 android:inputType="text"
-                android:text="@{viewModel.url}" />
+                android:text="@={viewModel.url}" />
         </com.github.hyota.asciiartboardreader.ui.view.FloatLabelLayout>
 
         <LinearLayout
@@ -49,7 +49,7 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/bbs_add_edit_title_hint"
                     android:inputType="text"
-                    android:text="@{viewModel.name}" />
+                    android:text="@={viewModel.name}" />
             </com.github.hyota.asciiartboardreader.ui.view.FloatLabelLayout>
 
             <Button

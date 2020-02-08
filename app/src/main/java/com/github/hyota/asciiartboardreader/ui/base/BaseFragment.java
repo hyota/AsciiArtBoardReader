@@ -8,16 +8,14 @@ import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
-import androidx.databinding.ViewDataBinding;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModel;
 
 import com.github.hyota.asciiartboardreader.R;
 import com.github.hyota.asciiartboardreader.ui.common.AlertDialogFragment;
 
 import dagger.android.support.AndroidSupportInjection;
 
-public abstract class BaseFragment<VM extends ViewModel, VDB extends ViewDataBinding> extends Fragment implements AlertDialogFragment.Callback {
+public abstract class BaseFragment extends Fragment implements AlertDialogFragment.Callback {
 
     protected Context context;
 
