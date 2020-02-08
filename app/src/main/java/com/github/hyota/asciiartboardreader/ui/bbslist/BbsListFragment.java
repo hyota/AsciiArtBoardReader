@@ -66,23 +66,19 @@ public class BbsListFragment extends BaseFragment<BbsListViewModel> {
         binding.list.setLayoutManager(new LinearLayoutManager(context));
         binding.list.setAdapter(new EmptyReciyclerViewAdapter());
         viewModel.getBbsList().observe(getViewLifecycleOwner(), bbsList -> {
-            if (bbsList.isSuccess()) {
-                BbsListRecyclerViewAdapter adapter = new BbsListRecyclerViewAdapter(bbsList.getData(),
-                        new ListItemInteractionListener<Bbs>() {
-                            @Override
-                            public void onItemClick(@NonNull Bbs bbs) {
-                                listener.onSelectBbs(bbs);
-                            }
+            BbsListRecyclerViewAdapter adapter = new BbsListRecyclerViewAdapter(bbsList,
+                    new ListItemInteractionListener<Bbs>() {
+                        @Override
+                        public void onItemClick(@NonNull Bbs bbs) {
+                            listener.onSelectBbs(bbs);
+                        }
 
-                            @Override
-                            public void onItemLongClick(@NonNull Bbs bbs) {
-                                BbsAddEditDialogFragment.show(getChildFragmentManager(), bbs);
-                            }
-                        });
-                binding.list.setAdapter(adapter);
-            } else {
-                showErrorToast(R.string.bbs_list_load_error);
-            }
+                        @Override
+                        public void onItemLongClick(@NonNull Bbs bbs) {
+                            BbsAddEditDialogFragment.show(getChildFragmentManager(), bbs);
+                        }
+                    });
+            binding.list.setAdapter(adapter);
         });
     }
 

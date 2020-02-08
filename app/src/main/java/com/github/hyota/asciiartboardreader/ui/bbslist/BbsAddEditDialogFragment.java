@@ -17,7 +17,7 @@ import com.github.hyota.asciiartboardreader.R;
 import com.github.hyota.asciiartboardreader.databinding.DialogBbsAddBinding;
 import com.github.hyota.asciiartboardreader.model.entity.Bbs;
 import com.github.hyota.asciiartboardreader.model.value.LoadingStateValue;
-import com.github.hyota.asciiartboardreader.ui.common.BaseDialogFragment;
+import com.github.hyota.asciiartboardreader.ui.base.BaseDialogFragment;
 
 import java.util.Objects;
 
@@ -114,6 +114,16 @@ public abstract class BbsAddEditDialogFragment extends BaseDialogFragment<BbsAdd
         protected void onOkClick() {
             viewModel.create();
         }
+
+        // TODO デバッグ用
+        @Override
+        protected void onShow(DialogInterface dialog) {
+            super.onShow(dialog);
+            if (com.github.hyota.asciiartboardreader.BuildConfig.DEBUG) {
+                viewModel.setInitialValue(new Bbs("", "http://yarufox.sakura.ne.jp/FOX/"));
+            }
+        }
+
     }
 
     public static class BbsEditDialogFragment extends BbsAddEditDialogFragment {

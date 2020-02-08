@@ -1,29 +1,32 @@
 package com.github.hyota.asciiartboardreader.ui.bbslist;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
+import com.github.hyota.asciiartboardreader.R;
 import com.github.hyota.asciiartboardreader.model.entity.Bbs;
-import com.github.hyota.asciiartboardreader.model.usecase.BbsLoadUseCase;
-import com.github.hyota.asciiartboardreader.ui.common.DataWithErrorState;
+import com.github.hyota.asciiartboardreader.model.usecase.LoadBbsUseCase;
+import com.github.hyota.asciiartboardreader.model.value.ErrorDisplayTypeValue;
+import com.github.hyota.asciiartboardreader.ui.base.BaseViewModel;
+import com.github.hyota.asciiartboardreader.ui.common.ErrorMessageModel;
 
 import java.util.List;
 
 import javax.inject.Inject;
 
-public class BbsListViewModel extends ViewModel {
+public class BbsListViewModel extends BaseViewModel {
 
-    private BbsLoadUseCase bbsLoadUseCase;
+    private LoadBbsUseCase loadBbsUseCase;
 
-    private MutableLiveData<DataWithErrorState<List<Bbs>>> bbsList;
+    private MutableLiveData<List<Bbs>> bbsList;
 
     @Inject
-    public BbsListViewModel(BbsLoadUseCase bbsLoadUseCase) {
-        this.bbsLoadUseCase = bbsLoadUseCase;
+    public BbsListViewModel(LoadBbsUseCase loadBbsUseCase) {
+        this.loadBbsUseCase = loadBbsUseCase;
     }
 
-    public LiveData<DataWithErrorState<List<Bbs>>> getBbsList() {
+    public LiveData<List<Bbs>> getBbsList() {
         if (bbsList == null) {
             bbsList = new MutableLiveData<>();
             loadBbsList();
@@ -32,9 +35,16 @@ public class BbsListViewModel extends ViewModel {
     }
 
     private void loadBbsList() {
-        bbsLoadUseCase.execute(
-                result -> bbsList.postValue(new DataWithErrorState<>(result)),
-                () -> bbsList.postValue(DataWithErrorState.error()));
-    }
+        loadBbsUseCase.execute(new LoadBbsUseCase.Callback() {
+            @Override
+            public void onSuccess(@NonNull List<Bbs> result) {
+                bbsList.postValue(result);
+            }
 
+            @Override
+            public void onFail() {
+                errorMessage.postValue(new ErrorMessageModel(R.string.bbs_list_load_error, ErrorDisplayTypeValue.TOAST));
+            }
+        });
+    }
 }

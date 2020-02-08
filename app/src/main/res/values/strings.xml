@@ -21,6 +21,8 @@
     <string name="bbs_add_edit_url_hint">URL：http://xxx.xxx.xxx&#8230;</string>
     <string name="bbs_add_edit_title_get">板名取得</string>
     <string name="bbs_add_edit_title_hint">板名：○○板</string>
+    <string name="bbs_add_edit_error_invalid_url">不正なURLです</string>
+    <string name="bbs_add_edit_error_failed_load_title">板名の取得に失敗しました</string>
 
     <!-- スレッド一覧 -->
     <string name="label_count">レス：</string>

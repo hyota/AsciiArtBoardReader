@@ -10,26 +10,31 @@ import java.util.List;
 import javax.inject.Inject;
 
 import lombok.extern.slf4j.Slf4j;
-import timber.log.Timber;
 
 @Slf4j
-public class BbsLoadUseCase {
+public class LoadBbsUseCase {
+
+    public interface Callback {
+        void onSuccess(@NonNull List<Bbs> result);
+
+        void onFail();
+    }
 
     @NonNull
     private BbsRepository bbsRepository;
 
     @Inject
-    public BbsLoadUseCase(@NonNull BbsRepository bbsRepository) {
+    public LoadBbsUseCase(@NonNull BbsRepository bbsRepository) {
         this.bbsRepository = bbsRepository;
     }
 
-    public void execute(@NonNull Callback<List<Bbs>> callback, @NonNull Runnable onFail) {
+    public void execute(@NonNull Callback callback) {
         new Thread(() -> {
             try {
-                callback.apply(bbsRepository.findAll());
+                callback.onSuccess(bbsRepository.findAll());
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
-                onFail.run();
+                callback.onFail();
             }
         }).start();
     }

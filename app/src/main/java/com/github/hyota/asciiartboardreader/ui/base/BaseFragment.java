@@ -2,23 +2,25 @@ package com.github.hyota.asciiartboardreader.ui.base;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.StringRes;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.github.hyota.asciiartboardreader.R;
+import com.github.hyota.asciiartboardreader.model.value.ErrorDisplayTypeValue;
 import com.github.hyota.asciiartboardreader.ui.common.AlertDialogFragment;
+import com.github.hyota.asciiartboardreader.ui.common.ErrorMessageModel;
 
 import javax.inject.Inject;
 
 import dagger.android.support.AndroidSupportInjection;
+import timber.log.Timber;
 
-public abstract class BaseFragment<VM extends ViewModel> extends Fragment implements AlertDialogFragment.Callback {
+public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment implements AlertDialogFragment.Callback {
 
     @Inject
     ViewModelProvider.Factory factory;
@@ -43,6 +45,16 @@ public abstract class BaseFragment<VM extends ViewModel> extends Fragment implem
         if (context instanceof HasFloatingActionButton) {
             hasFloatingActionButton = (HasFloatingActionButton) context;
         }
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        viewModel.getErrorMessage().observe(getViewLifecycleOwner(), errorMessageModel -> {
+            if (errorMessageModel != null) {
+                showErrorMessage(errorMessageModel);
+            }
+        });
     }
 
     @Override
@@ -77,20 +89,21 @@ public abstract class BaseFragment<VM extends ViewModel> extends Fragment implem
         }
     }
 
-    protected void showErrorDialog(@NonNull String message) {
-        new AlertDialogFragment.Builder(this)
-                .setTitle(R.string.error_dialog_title)
-                .setMessage(message)
-                .setCancelable(true)
-                .show();
-    }
-
-    protected void showErrorToast(@StringRes int message) {
-        Toast.makeText(context, message, Toast.LENGTH_LONG).show();
-    }
-
-    protected void showErrorToast(@NonNull String message) {
-        Toast.makeText(context, message, Toast.LENGTH_LONG).show();
+    protected void showErrorMessage(@NonNull ErrorMessageModel errorMessageModel) {
+        String message = getString(errorMessageModel.getResId(), errorMessageModel.getParams());
+        if (errorMessageModel.getDisplayType() == ErrorDisplayTypeValue.TOAST) {
+            Toast.makeText(context, message, Toast.LENGTH_LONG).show();
+        } else if (errorMessageModel.getDisplayType() == ErrorDisplayTypeValue.DIALOG) {
+            new AlertDialogFragment.Builder(this)
+                    .setTitle(R.string.error_dialog_title)
+                    .setMessage(message)
+                    .setCancelable(true)
+                    .show();
+        } else {
+            Timber.w("%s is disabled display type", errorMessageModel.getDisplayType());
+            Toast.makeText(context, message, Toast.LENGTH_LONG).show();
+        }
+        viewModel.clearErrorMessage();
     }
 
 }
