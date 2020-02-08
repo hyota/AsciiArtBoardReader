@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:bind="http://schemas.android.com/tools">
 
     <data>
 
@@ -64,23 +65,20 @@
                     android:id="@+id/inputTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/text_margin"
                     android:hint="@string/bbs_add_edit_title_hint"
-                    android:text="@={viewModel.name}" />
+                    android:text="@={viewModel.title}" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!--<Button-->
-            <!--android:id="@+id/getTitleButton"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:text="@string/bbs_add_edit_title_get" />-->
-
-            <br.com.simplepass.loadingbutton.customViews.CircularProgressButton
-                android:id="@+id/getTitleButton"
+            <de.mustafagercek.library.LoadingButton
+                android:id="@+id/loadTitleButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="@dimen/text_margin"
                 android:enabled="@{viewModel.canLoadBbsTitle}"
-                android:text="@string/bbs_add_edit_title_get" />
+                app:buttonText="@string/bbs_add_edit_title_get"
+                app:textColor="@android:color/white"
+                bind:buttonColor="@{viewModel.canLoadBbsTitle ? @color/colorPrimary : @android:color/darker_gray}" />
 
         </LinearLayout>
     </LinearLayout>

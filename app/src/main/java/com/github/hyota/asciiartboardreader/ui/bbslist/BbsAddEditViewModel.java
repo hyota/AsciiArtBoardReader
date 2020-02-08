@@ -19,10 +19,16 @@ public class BbsAddEditViewModel extends ViewModel {
 
     @Getter
     @NonNull
-    private MutableLiveData<String> name = new MutableLiveData<>("");
+    private MutableLiveData<String> title = new MutableLiveData<>();
     @Getter
     @NonNull
-    private MutableLiveData<String> url = new MutableLiveData<>("");
+    private MediatorLiveData<String> titleError = new MediatorLiveData<>();
+    @Getter
+    @NonNull
+    private MutableLiveData<String> url = new MutableLiveData<>();
+    @Getter
+    @NonNull
+    private MediatorLiveData<String> urlError = new MediatorLiveData<>();
     @Getter
     @NonNull
     private MediatorLiveData<Boolean> canSubmit = new MediatorLiveData<>();
@@ -37,21 +43,28 @@ public class BbsAddEditViewModel extends ViewModel {
 
     @Inject
     public BbsAddEditViewModel() {
-        Timber.d("aaaaaaa");
-        canSubmit.addSource(name, s -> canSubmit.postValue(isInputted()));
+        titleError.addSource(title, s -> titleError.postValue(null));
+        urlError.addSource(url, s -> urlError.postValue(null));
+        canSubmit.addSource(title, s -> canSubmit.postValue(isInputted()));
         canSubmit.addSource(url, s -> canSubmit.postValue(isInputted()));
-        canLoadBbsTitle.addSource(url, s -> canLoadBbsTitle.postValue(!TextUtils.isEmpty(s)));
+        canLoadBbsTitle.addSource(url, s -> {
+            Boolean enabled = !TextUtils.isEmpty(s);
+            if (canLoadBbsTitle.getValue() != enabled) {
+                canLoadBbsTitle.postValue(!TextUtils.isEmpty(s));
+            }
+        });
     }
 
     public void setInitialValue(@NonNull Bbs initialValue) {
         if (this.bbs == null) {
             this.bbs = initialValue;
-            name.postValue(bbs.getName());
+            title.postValue(bbs.getName());
             url.postValue(bbs.getUrl());
         }
     }
 
-    public void loadBbsTitle() {
+    public void loadTitle() {
+        Timber.d("loadTitle start");
         loadBbsTitleButtonState.postValue(LoadingStateValue.LOADING);
     }
 
@@ -62,7 +75,7 @@ public class BbsAddEditViewModel extends ViewModel {
     }
 
     private boolean isInputted() {
-        return !TextUtils.isEmpty(name.getValue()) && !TextUtils.isEmpty(url.getValue());
+        return !TextUtils.isEmpty(title.getValue()) && !TextUtils.isEmpty(url.getValue());
     }
 
 }

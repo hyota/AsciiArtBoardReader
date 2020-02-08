@@ -126,6 +126,6 @@ dependencies {
     // SwipyRefreshLayout Android Arsenal
     implementation 'com.github.orangegangsters:swipy:1.2.3@aar'
 
-    // Progress Button Android
-    implementation 'br.com.simplepass:loading-button-android:2.2.0'
+    // MaterialLoadingButton
+    implementation 'com.github.Muki1992:MaterialLoadingButton:1.0'
 }
