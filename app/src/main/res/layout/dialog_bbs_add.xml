@@ -18,45 +18,70 @@
         android:layout_marginBottom="@dimen/activity_vertical_margin"
         android:orientation="vertical">
 
-        <com.github.hyota.asciiartboardreader.ui.view.FloatLabelLayout
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/inputUrlLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:floatLabelTextAppearance="@style/TextAppearance.FloatLabel">
+            android:layout_marginStart="@dimen/text_margin"
+            android:layout_marginEnd="@dimen/text_margin"
+            app:counterEnabled="true"
+            app:counterMaxLength="@integer/url_max_length"
+            app:errorEnabled="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-            <EditText
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/inputUrl"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/bbs_add_edit_url_hint"
-                android:inputType="text"
                 android:text="@={viewModel.url}" />
-        </com.github.hyota.asciiartboardreader.ui.view.FloatLabelLayout>
+        </com.google.android.material.textfield.TextInputLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <com.github.hyota.asciiartboardreader.ui.view.FloatLabelLayout
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/inputTitleLayout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/text_margin"
+                android:layout_marginEnd="@dimen/text_margin"
                 android:layout_weight="1"
-                app:floatLabelTextAppearance="@style/TextAppearance.FloatLabel">
+                app:counterEnabled="true"
+                app:counterMaxLength="@integer/title_max_length"
+                app:errorEnabled="true"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-                <EditText
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/inputTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/text_margin"
                     android:hint="@string/bbs_add_edit_title_hint"
-                    android:inputType="text"
                     android:text="@={viewModel.name}" />
-            </com.github.hyota.asciiartboardreader.ui.view.FloatLabelLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <Button
+            <!--<Button-->
+            <!--android:id="@+id/getTitleButton"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="@string/bbs_add_edit_title_get" />-->
+
+            <br.com.simplepass.loadingbutton.customViews.CircularProgressButton
                 android:id="@+id/getTitleButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:enabled="@{viewModel.canLoadBbsTitle}"
                 android:text="@string/bbs_add_edit_title_get" />
+
         </LinearLayout>
     </LinearLayout>
 </layout>

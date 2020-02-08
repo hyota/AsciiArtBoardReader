@@ -1,39 +1,35 @@
 package com.github.hyota.asciiartboardreader.ui.bbslist;
 
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
-import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.github.hyota.asciiartboardreader.R;
 import com.github.hyota.asciiartboardreader.databinding.DialogBbsAddBinding;
 import com.github.hyota.asciiartboardreader.model.entity.Bbs;
+import com.github.hyota.asciiartboardreader.model.value.LoadingStateValue;
+import com.github.hyota.asciiartboardreader.ui.common.BaseDialogFragment;
 
 import java.util.Objects;
 
-import javax.inject.Inject;
-
-import dagger.android.support.AndroidSupportInjection;
-
-public abstract class BbsAddEditDialogFragment extends DialogFragment {
+public abstract class BbsAddEditDialogFragment extends BaseDialogFragment<BbsAddEditViewModel> {
     private static final String TAG = BbsAddEditDialogFragment.class.getSimpleName();
 
     private static final String ARG_BBS = "bbs";
 
-    @Inject
-    BbsAddEditViewModel viewModel;
     private DialogBbsAddBinding binding;
-    protected Context context;
 
     public static void show(@NonNull FragmentManager fragmentManager) {
         new BbsAddDialogFragment().show(fragmentManager, TAG);
@@ -47,13 +43,6 @@ public abstract class BbsAddEditDialogFragment extends DialogFragment {
         dialogFragment.show(fragmentManager, TAG);
     }
 
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        AndroidSupportInjection.inject(this);
-        this.context = context;
-        super.onAttach(context);
-    }
 
     @NonNull
     @Override
@@ -77,6 +66,28 @@ public abstract class BbsAddEditDialogFragment extends DialogFragment {
         });
         setCancelable(true);
         return alertDialog;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        viewModel.getLoadBbsTitleButtonState().observe(getViewLifecycleOwner(), state -> {
+            if (state == LoadingStateValue.LOADING) {
+                binding.getTitleButton.startAnimation();
+            } else if (state == LoadingStateValue.SUCCESS) {
+                binding.getTitleButton.doneLoadingAnimation(ContextCompat.getColor(context, R.color.colorPrimary),
+                        BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_done_white_48dp));
+            } else {
+                binding.getTitleButton.revertAnimation();
+            }
+        });
+        binding.getTitleButton.setOnClickListener(v -> viewModel.loadBbsTitle());
+    }
+
+    @NonNull
+    @Override
+    protected Class<BbsAddEditViewModel> getViewModelClass() {
+        return BbsAddEditViewModel.class;
     }
 
     @StringRes

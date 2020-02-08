@@ -4,20 +4,27 @@ import android.content.Context;
 import android.os.Bundle;
 import android.widget.Toast;
 
-import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.github.hyota.asciiartboardreader.R;
 import com.github.hyota.asciiartboardreader.ui.common.AlertDialogFragment;
 
+import javax.inject.Inject;
+
 import dagger.android.support.AndroidSupportInjection;
 
-public abstract class BaseFragment extends Fragment implements AlertDialogFragment.Callback {
+public abstract class BaseFragment<VM extends ViewModel> extends Fragment implements AlertDialogFragment.Callback {
+
+    @Inject
+    ViewModelProvider.Factory factory;
 
     protected Context context;
+    protected VM viewModel;
 
     @Nullable
     protected HasFloatingActionButton hasFloatingActionButton;
@@ -28,6 +35,7 @@ public abstract class BaseFragment extends Fragment implements AlertDialogFragme
     public void onAttach(@NonNull Context context) {
         AndroidSupportInjection.inject(this);
         super.onAttach(context);
+        viewModel = new ViewModelProvider(this, factory).get(getViewModelClass());
         this.context = context;
         if (context instanceof HasActionBar) {
             hasActionBar = (HasActionBar) context;
@@ -49,8 +57,8 @@ public abstract class BaseFragment extends Fragment implements AlertDialogFragme
     @NonNull
     protected abstract String getActionBarTitle();
 
-    @LayoutRes
-    protected abstract int getLayoutId();
+    @NonNull
+    protected abstract Class<VM> getViewModelClass();
 
     @Override
     public void onAlertDialogSucceeded(int requestCode, int resultCode, Bundle params) {

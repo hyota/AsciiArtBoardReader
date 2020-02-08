@@ -12,9 +12,9 @@ import dagger.multibindings.IntoMap;
 @Module
 public abstract class BbsAddEditDialogFragmentModule {
 
-    @Binds
-    @IntoMap
-    @ViewModelKey(BbsAddEditViewModel.class)
-    abstract ViewModel bindViewModel(BbsAddEditViewModel viewModel);
+//    @Binds
+//    @IntoMap
+//    @ViewModelKey(BbsAddEditViewModel.class)
+//    abstract ViewModel bindViewModel(BbsAddEditViewModel viewModel);
 
 }

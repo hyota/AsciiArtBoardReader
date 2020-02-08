@@ -11,9 +11,9 @@ import dagger.multibindings.IntoMap;
 @Module
 public abstract class BbsListFragmentModule {
 
-    @Binds
-    @IntoMap
-    @ViewModelKey(BbsListViewModel.class)
-    abstract ViewModel bindViewModel(BbsListViewModel viewModel);
+//    @Binds
+//    @IntoMap
+//    @ViewModelKey(BbsListViewModel.class)
+//    abstract ViewModel bindViewModel(BbsListViewModel viewModel);
 
 }

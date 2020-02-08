@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <integer name="url_max_length">2048</integer>
+    <integer name="title_max_length">2048</integer>
+
+
+</resources>

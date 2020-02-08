@@ -8,11 +8,12 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.github.hyota.asciiartboardreader.model.entity.Bbs;
+import com.github.hyota.asciiartboardreader.model.value.LoadingStateValue;
 
 import javax.inject.Inject;
 
 import lombok.Getter;
-import lombok.Setter;
+import timber.log.Timber;
 
 public class BbsAddEditViewModel extends ViewModel {
 
@@ -25,13 +26,21 @@ public class BbsAddEditViewModel extends ViewModel {
     @Getter
     @NonNull
     private MediatorLiveData<Boolean> canSubmit = new MediatorLiveData<>();
+    @Getter
+    @NonNull
+    private MediatorLiveData<Boolean> canLoadBbsTitle = new MediatorLiveData<>();
+    @Getter
+    @NonNull
+    private MutableLiveData<Integer> loadBbsTitleButtonState = new MutableLiveData<>(LoadingStateValue.NONE);
 
     private Bbs bbs;
 
     @Inject
     public BbsAddEditViewModel() {
+        Timber.d("aaaaaaa");
         canSubmit.addSource(name, s -> canSubmit.postValue(isInputted()));
         canSubmit.addSource(url, s -> canSubmit.postValue(isInputted()));
+        canLoadBbsTitle.addSource(url, s -> canLoadBbsTitle.postValue(!TextUtils.isEmpty(s)));
     }
 
     public void setInitialValue(@NonNull Bbs initialValue) {
@@ -40,6 +49,10 @@ public class BbsAddEditViewModel extends ViewModel {
             name.postValue(bbs.getName());
             url.postValue(bbs.getUrl());
         }
+    }
+
+    public void loadBbsTitle() {
+        loadBbsTitleButtonState.postValue(LoadingStateValue.LOADING);
     }
 
     public void create() {

@@ -22,7 +22,7 @@ import javax.inject.Inject;
 
 import timber.log.Timber;
 
-public class BbsListFragment extends BaseFragment {
+public class BbsListFragment extends BaseFragment<BbsListViewModel> {
 
     @Inject
     BbsListViewModel viewModel;
@@ -56,7 +56,7 @@ public class BbsListFragment extends BaseFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_bbs_list, container, false);
-        binding.setLifecycleOwner(this);
+        binding.setLifecycleOwner(getViewLifecycleOwner());
         return binding.getRoot();
     }
 
@@ -65,7 +65,7 @@ public class BbsListFragment extends BaseFragment {
         super.onViewCreated(view, savedInstanceState);
         binding.list.setLayoutManager(new LinearLayoutManager(context));
         binding.list.setAdapter(new EmptyReciyclerViewAdapter());
-        viewModel.getBbsList().observe(this, bbsList -> {
+        viewModel.getBbsList().observe(getViewLifecycleOwner(), bbsList -> {
             if (bbsList.isSuccess()) {
                 BbsListRecyclerViewAdapter adapter = new BbsListRecyclerViewAdapter(bbsList.getData(),
                         new ListItemInteractionListener<Bbs>() {
@@ -98,9 +98,10 @@ public class BbsListFragment extends BaseFragment {
         return context.getString(R.string.bbs_list_title);
     }
 
+    @NonNull
     @Override
-    protected int getLayoutId() {
-        return R.layout.fragment_bbs_list;
+    protected Class<BbsListViewModel> getViewModelClass() {
+        return BbsListViewModel.class;
     }
 
     @Override

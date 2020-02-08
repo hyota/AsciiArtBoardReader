@@ -13,10 +13,10 @@ import dagger.multibindings.IntoMap;
  */
 @Module
 public abstract class MainActivityModule {
-
-    @Binds
-    @IntoMap
-    @ViewModelKey(MainViewModel.class)
-    abstract ViewModel bindViewModel(MainViewModel viewModel);
+//
+//    @Binds
+//    @IntoMap
+//    @ViewModelKey(MainViewModel.class)
+//    abstract ViewModel bindViewModel(MainViewModel viewModel);
 
 }

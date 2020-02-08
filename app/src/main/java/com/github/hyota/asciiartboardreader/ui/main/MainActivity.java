@@ -15,9 +15,11 @@ import androidx.core.view.GravityCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.github.hyota.asciiartboardreader.R;
 import com.github.hyota.asciiartboardreader.databinding.ActivityMainBinding;
+import com.github.hyota.asciiartboardreader.di.ViewModelFactory;
 import com.github.hyota.asciiartboardreader.model.entity.Bbs;
 import com.github.hyota.asciiartboardreader.ui.base.BaseActivity;
 import com.github.hyota.asciiartboardreader.ui.base.HasActionBar;
@@ -32,18 +34,19 @@ import dagger.android.DispatchingAndroidInjector;
 import dagger.android.support.HasSupportFragmentInjector;
 import timber.log.Timber;
 
-public class MainActivity extends BaseActivity
+public class MainActivity extends BaseActivity<MainViewModel>
         implements HasSupportFragmentInjector, NavigationView.OnNavigationItemSelectedListener,
         HasActionBar, HasFloatingActionButton, BbsListFragment.Listener {
     @Inject
     DispatchingAndroidInjector<Fragment> fragmentInjector;
     @Inject
-    MainViewModel viewModel;
-    ActivityMainBinding binding;
+    ViewModelFactory viewModelFactory;
+    private ActivityMainBinding binding;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        MainViewModel mainViewModel = new ViewModelProvider(this, viewModelFactory).get(MainViewModel.class);
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         binding.setLifecycleOwner(this);
@@ -99,6 +102,12 @@ public class MainActivity extends BaseActivity
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @NonNull
+    @Override
+    protected Class<MainViewModel> getViewModelClass() {
+        return MainViewModel.class;
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
