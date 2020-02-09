@@ -9,7 +9,8 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
-import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.hyota.asciiartboardreader.R;
 import com.github.hyota.asciiartboardreader.databinding.FragmentBbsListBinding;
@@ -22,7 +23,8 @@ import javax.inject.Inject;
 
 import timber.log.Timber;
 
-public class BbsListFragment extends BaseFragment<BbsListViewModel> {
+public class BbsListFragment extends BaseFragment<BbsListViewModel>
+        implements BbsAddEditDialogFragment.Listener {
 
     @Inject
     BbsListViewModel viewModel;
@@ -63,7 +65,9 @@ public class BbsListFragment extends BaseFragment<BbsListViewModel> {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        binding.list.setLayoutManager(new LinearLayoutManager(context));
+        RecyclerView.ItemDecoration itemDecoration =
+                new DividerItemDecoration(context, DividerItemDecoration.VERTICAL);
+        binding.list.addItemDecoration(itemDecoration);
         binding.list.setAdapter(new EmptyReciyclerViewAdapter());
         viewModel.getBbsList().observe(getViewLifecycleOwner(), bbsList -> {
             BbsListRecyclerViewAdapter adapter = new BbsListRecyclerViewAdapter(bbsList,
@@ -110,4 +114,10 @@ public class BbsListFragment extends BaseFragment<BbsListViewModel> {
             Timber.w("%s is not implemented HasFloatingActionButton", context);
         }
     }
+
+    @Override
+    public void onBbsAddEditComplete() {
+        viewModel.load();
+    }
+
 }

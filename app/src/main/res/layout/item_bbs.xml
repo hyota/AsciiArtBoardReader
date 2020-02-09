@@ -22,7 +22,7 @@
             android:layout_marginTop="@dimen/text_margin_vertical"
             android:layout_marginEnd="@dimen/text_margin"
             android:layout_marginBottom="@dimen/text_margin_vertical"
-            android:text="@{bbs.name}"
+            android:text="@{bbs.title}"
             android:textAppearance="?attr/textAppearanceListItem" />
 
         <TextView
@@ -32,7 +32,7 @@
             android:layout_marginStart="@dimen/text_margin"
             android:layout_marginEnd="@dimen/text_margin"
             android:layout_marginBottom="@dimen/text_margin_vertical"
-            android:text="@{bbs.url}"
+            android:text="@{bbs.httpUrl.toString()}"
             android:textAppearance="?attr/textAppearanceListItemSecondary" />
     </LinearLayout>
 </layout>

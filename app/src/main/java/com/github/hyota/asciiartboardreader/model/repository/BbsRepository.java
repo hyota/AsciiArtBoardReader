@@ -6,6 +6,8 @@ import com.github.hyota.asciiartboardreader.model.entity.Bbs;
 
 import java.util.List;
 
+import javax.annotation.Nonnull;
+
 public interface BbsRepository {
 
     @NonNull
@@ -16,5 +18,9 @@ public interface BbsRepository {
     void update(@NonNull Bbs bbs);
 
     void delete(@NonNull Bbs... bbses);
+
+    Bbs selectTitleEquals(@Nonnull Bbs bbs);
+
+    Bbs selectUrlEquals(@Nonnull Bbs bbs);
 
 }

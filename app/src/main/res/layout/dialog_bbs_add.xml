@@ -37,6 +37,7 @@
                 android:id="@+id/inputUrl"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:enabled="@{viewModel.canInput}"
                 android:hint="@string/bbs_add_edit_url_hint"
                 android:text="@={viewModel.url}" />
         </com.google.android.material.textfield.TextInputLayout>
@@ -65,6 +66,7 @@
                     android:id="@+id/inputTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:enabled="@{viewModel.canInput}"
                     android:hint="@string/bbs_add_edit_title_hint"
                     android:text="@={viewModel.title}" />
             </com.google.android.material.textfield.TextInputLayout>

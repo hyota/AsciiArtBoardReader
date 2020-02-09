@@ -2,20 +2,23 @@ package com.github.hyota.asciiartboardreader.di;
 
 import android.content.Context;
 
+import com.github.hyota.asciiartboardreader.model.net.SettingConverterFactory;
 import com.readystatesoftware.chuck.ChuckInterceptor;
 
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import dagger.Module;
 import dagger.Provides;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.Retrofit;
 
 @Module
 public class NetworkModule {
 
     @Provides
-    OkHttpClient provideOkHtttpClient(Context context) {
+    OkHttpClient provideOkHttpClient(Context context) {
 
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -26,6 +29,16 @@ public class NetworkModule {
                 .writeTimeout(20, TimeUnit.SECONDS)
                 .addInterceptor(new ChuckInterceptor(context))
                 .addInterceptor(interceptor)
+                .build();
+    }
+
+    @Provides
+    Retrofit provideRetrofit(OkHttpClient client, SettingConverterFactory settingConverterFactory) {
+        return new Retrofit.Builder()
+                .addConverterFactory(settingConverterFactory)
+                .baseUrl("http://jbbs.livedoor.jp")
+                .client(client)
+                .callbackExecutor(Executors.newSingleThreadExecutor())
                 .build();
     }
 

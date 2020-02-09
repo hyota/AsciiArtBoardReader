@@ -1,6 +1,7 @@
 package com.github.hyota.asciiartboardreader.ui.bbslist;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,6 +12,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AlertDialog;
 import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.github.hyota.asciiartboardreader.R;
@@ -19,6 +21,7 @@ import com.github.hyota.asciiartboardreader.model.entity.Bbs;
 import com.github.hyota.asciiartboardreader.model.value.LoadingStateValue;
 import com.github.hyota.asciiartboardreader.ui.base.BaseDialogFragment;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 import timber.log.Timber;
@@ -29,6 +32,12 @@ public abstract class BbsAddEditDialogFragment extends BaseDialogFragment<BbsAdd
     private static final String ARG_BBS = "bbs";
 
     private DialogBbsAddBinding binding;
+    @Nullable
+    private Listener listener;
+
+    public interface Listener {
+        void onBbsAddEditComplete();
+    }
 
     public static void show(@NonNull FragmentManager fragmentManager) {
         new BbsAddDialogFragment().show(fragmentManager, TAG);
@@ -42,6 +51,24 @@ public abstract class BbsAddEditDialogFragment extends BaseDialogFragment<BbsAdd
         dialogFragment.show(fragmentManager, TAG);
     }
 
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        Fragment fragment = getParentFragment();
+        if (fragment != null) {
+            if (fragment instanceof Listener) {
+                listener = (Listener) fragment;
+            } else {
+                Timber.w("%s is not implemented BbsAddEditDialogFragment.Listener.", fragment);
+            }
+        } else {
+            if (context instanceof Listener) {
+                listener = (Listener) context;
+            } else {
+                Timber.w("%s is not implemented BbsAddEditDialogFragment.Listener.", context);
+            }
+        }
+    }
 
     @NonNull
     @Override
@@ -53,9 +80,7 @@ public abstract class BbsAddEditDialogFragment extends BaseDialogFragment<BbsAdd
                 .setTitle(getTitle())
                 .setView(binding.getRoot())
                 .setPositiveButton(android.R.string.ok, null)
-                .setNeutralButton(android.R.string.cancel, (dialog, which) -> {
-                    // NOOP
-                })
+                .setNegativeButton(android.R.string.cancel, null)
                 .create();
         alertDialog.setOnShowListener(this::onShow);
         setCancelable(true);
@@ -77,18 +102,43 @@ public abstract class BbsAddEditDialogFragment extends BaseDialogFragment<BbsAdd
         AlertDialog alertDialog = (AlertDialog) dialog;
         Button positive = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
         positive.setOnClickListener(v -> onOkClick());
-        viewModel.getTitleError().observe(this, binding.inputTitleLayout::setError);
-        viewModel.getUrlError().observe(this, binding.inputUrlLayout::setError);
+        Button negative = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+        negative.setOnClickListener(v -> dismiss());
+        viewModel.getTitleError().observe(this, errorMessageModel -> {
+            String error = null;
+            if (errorMessageModel != null) {
+                error = getString(errorMessageModel.getResId(), errorMessageModel.getParams());
+            }
+            binding.inputTitleLayout.setError(error);
+        });
+        viewModel.getUrlError().observe(this, errorMessageModel -> {
+            String error = null;
+            if (errorMessageModel != null) {
+                error = getString(errorMessageModel.getResId(), errorMessageModel.getParams());
+            }
+            binding.inputUrlLayout.setError(error);
+        });
         viewModel.getCanSubmit().observe(this, positive::setEnabled);
         viewModel.getLoadBbsTitleButtonState().observe(this, state -> {
             if (state == LoadingStateValue.LOADING) {
-                binding.inputUrl.setEnabled(false);
-                binding.inputTitle.setEnabled(false);
                 binding.loadTitleButton.onStartLoading();
             } else {
-                binding.inputUrl.setEnabled(true);
-                binding.inputTitle.setEnabled(true);
                 binding.loadTitleButton.onStopLoading();
+            }
+        });
+        viewModel.getSubmitState().observe(this, state -> {
+            if (state == LoadingStateValue.SUCCESS) {
+                if (listener != null) {
+                    listener.onBbsAddEditComplete();
+                }
+                dismiss();
+            }
+            if (state == LoadingStateValue.LOADING) {
+                negative.setEnabled(false);
+                setCancelable(false);
+            } else {
+                negative.setEnabled(true);
+                setCancelable(true);
             }
         });
         binding.loadTitleButton.setButtonOnClickListener(v -> {
@@ -112,7 +162,7 @@ public abstract class BbsAddEditDialogFragment extends BaseDialogFragment<BbsAdd
 
         @Override
         protected void onOkClick() {
-            viewModel.create();
+            viewModel.insert();
         }
 
         // TODO デバッグ用
@@ -120,7 +170,7 @@ public abstract class BbsAddEditDialogFragment extends BaseDialogFragment<BbsAdd
         protected void onShow(DialogInterface dialog) {
             super.onShow(dialog);
             if (com.github.hyota.asciiartboardreader.BuildConfig.DEBUG) {
-                viewModel.setInitialValue(new Bbs("", "http://yarufox.sakura.ne.jp/FOX/"));
+                viewModel.setInitialValue(new Bbs("", "http", "yarufox.sakura.ne.jp", Arrays.asList("FOX")));
             }
         }
 

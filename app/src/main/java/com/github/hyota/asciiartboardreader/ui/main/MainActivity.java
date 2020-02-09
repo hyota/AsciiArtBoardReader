@@ -172,7 +172,7 @@ public class MainActivity extends BaseActivity<MainViewModel>
     @Override
     public void onSelectBbs(@NonNull Bbs bbs) {
         // TODO
-        Timber.d("select %s, %s", bbs.getName(), bbs.getUrl());
+        Timber.d("select %s, %s", bbs.getTitle(), bbs.getHttpUrl().toString());
     }
 
 }

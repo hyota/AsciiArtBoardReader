@@ -8,6 +8,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.github.hyota.asciiartboardreader.R;
 import com.github.hyota.asciiartboardreader.model.entity.Bbs;
+import com.github.hyota.asciiartboardreader.model.usecase.InsertUpdateBbsUseCase;
 import com.github.hyota.asciiartboardreader.model.usecase.LoadBbsTitleUseCase;
 import com.github.hyota.asciiartboardreader.model.value.ErrorDisplayTypeValue;
 import com.github.hyota.asciiartboardreader.model.value.LoadingStateValue;
@@ -27,13 +28,16 @@ public class BbsAddEditViewModel extends BaseViewModel {
     private MutableLiveData<String> title = new MutableLiveData<>();
     @Getter
     @NonNull
-    private MediatorLiveData<String> titleError = new MediatorLiveData<>();
+    private MediatorLiveData<ErrorMessageModel> titleError = new MediatorLiveData<>();
     @Getter
     @NonNull
     private MutableLiveData<String> url = new MutableLiveData<>();
     @Getter
     @NonNull
-    private MediatorLiveData<String> urlError = new MediatorLiveData<>();
+    private MediatorLiveData<ErrorMessageModel> urlError = new MediatorLiveData<>();
+    @Getter
+    @NonNull
+    private MediatorLiveData<Boolean> canInput = new MediatorLiveData<>();
     @Getter
     @NonNull
     private MediatorLiveData<Boolean> canSubmit = new MediatorLiveData<>();
@@ -43,24 +47,43 @@ public class BbsAddEditViewModel extends BaseViewModel {
     @Getter
     @NonNull
     private MutableLiveData<Integer> loadBbsTitleButtonState = new MutableLiveData<>(LoadingStateValue.NONE);
+    @Getter
+    @Nonnull
+    private MutableLiveData<Integer> submitState = new MutableLiveData<>(LoadingStateValue.NONE);
 
     @NonNull
     private LoadBbsTitleUseCase loadBbsTitleUseCase;
+    @NonNull
+    private InsertUpdateBbsUseCase.InsertBbsUseCase insertBbsUseCase;
+    @NonNull
+    private InsertUpdateBbsUseCase.UpdateBbsUseCase updateBbsUseCase;
 
     private Bbs bbs;
 
     @Inject
-    public BbsAddEditViewModel(@NonNull LoadBbsTitleUseCase loadBbsTitleUseCase) {
+    public BbsAddEditViewModel(@NonNull LoadBbsTitleUseCase loadBbsTitleUseCase, @NonNull InsertUpdateBbsUseCase.InsertBbsUseCase saveBbsUseCase, @NonNull InsertUpdateBbsUseCase.UpdateBbsUseCase updateBbsUseCase) {
         this.loadBbsTitleUseCase = loadBbsTitleUseCase;
+        this.insertBbsUseCase = saveBbsUseCase;
+        this.updateBbsUseCase = updateBbsUseCase;
         titleError.addSource(title, s -> titleError.postValue(null));
         urlError.addSource(url, s -> urlError.postValue(null));
+
+        canInput.addSource(loadBbsTitleButtonState, state -> canInput.postValue(canInput()));
+        canInput.addSource(submitState, state -> canInput.postValue(canInput()));
+
         canSubmit.addSource(title, s -> canSubmit.postValue(canSubmit()));
         canSubmit.addSource(url, s -> canSubmit.postValue(canSubmit()));
         canSubmit.addSource(loadBbsTitleButtonState, state -> canSubmit.postValue(canSubmit()));
+        canSubmit.addSource(submitState, state -> canSubmit.postValue(canSubmit()));
+
         canLoadBbsTitle.addSource(url, s -> {
-            Boolean enabled = !TextUtils.isEmpty(s);
-            if (canLoadBbsTitle.getValue() != enabled) {
-                canLoadBbsTitle.postValue(!TextUtils.isEmpty(s));
+            if (canLoadBbsTitle.getValue() == null || canLoadBbsTitle.getValue() != canLoadTitle()) {
+                canLoadBbsTitle.postValue(canLoadTitle());
+            }
+        });
+        canLoadBbsTitle.addSource(submitState, state -> {
+            if (canLoadBbsTitle.getValue() == null || canLoadBbsTitle.getValue() != canLoadTitle()) {
+                canLoadBbsTitle.postValue(canLoadTitle());
             }
         });
     }
@@ -68,8 +91,8 @@ public class BbsAddEditViewModel extends BaseViewModel {
     public void setInitialValue(@NonNull Bbs initialValue) {
         if (this.bbs == null) {
             this.bbs = initialValue;
-            title.postValue(bbs.getName());
-            url.postValue(bbs.getUrl());
+            title.postValue(bbs.getTitle());
+            url.postValue(bbs.getHttpUrl().toString());
         }
     }
 
@@ -88,7 +111,7 @@ public class BbsAddEditViewModel extends BaseViewModel {
 
                 @Override
                 public void onInvalidUrl() {
-                    errorMessage.postValue(new ErrorMessageModel(R.string.bbs_add_edit_error_invalid_url, ErrorDisplayTypeValue.TOAST));
+                    urlError.postValue(new ErrorMessageModel(R.string.bbs_add_edit_error_invalid_url));
                     loadBbsTitleButtonState.postValue(LoadingStateValue.FAIL);
                 }
 
@@ -101,15 +124,65 @@ public class BbsAddEditViewModel extends BaseViewModel {
         }
     }
 
-    public void create() {
+    public void insert() {
+        insertOrUpdate(insertBbsUseCase);
     }
 
     public void update() {
+        insertOrUpdate(updateBbsUseCase);
+    }
+
+    private boolean canInput() {
+        return loadBbsTitleButtonState.getValue() != null && loadBbsTitleButtonState.getValue() != LoadingStateValue.LOADING && submitState.getValue() != null && submitState.getValue() != LoadingStateValue.LOADING;
     }
 
     private boolean canSubmit() {
         return !TextUtils.isEmpty(title.getValue()) && !TextUtils.isEmpty(url.getValue())
-                && loadBbsTitleButtonState.getValue() != null && loadBbsTitleButtonState.getValue() != LoadingStateValue.LOADING;
+                && loadBbsTitleButtonState.getValue() != null && loadBbsTitleButtonState.getValue() != LoadingStateValue.LOADING && submitState.getValue() != null && submitState.getValue() != LoadingStateValue.LOADING;
+    }
+
+    private boolean canLoadTitle() {
+        return !TextUtils.isEmpty(url.getValue()) && submitState.getValue() != null && submitState.getValue() != LoadingStateValue.LOADING;
+    }
+
+    private void insertOrUpdate(InsertUpdateBbsUseCase useCase) {
+        submitState.postValue(LoadingStateValue.LOADING);
+        String titleStr = this.title.getValue();
+        String urlStr = this.url.getValue();
+        if (titleStr == null || titleStr.isEmpty() || urlStr == null || urlStr.isEmpty()) {
+            return;
+        }
+        useCase.execute(titleStr, urlStr, bbs, new InsertUpdateBbsUseCase.Callback() {
+            @Override
+            public void onSuccess() {
+                submitState.postValue(LoadingStateValue.SUCCESS);
+            }
+
+            @Override
+            public void onInvalidUrl() {
+                urlError.postValue(new ErrorMessageModel(R.string.bbs_add_edit_error_invalid_url));
+                submitState.postValue(LoadingStateValue.FAIL);
+            }
+
+            @Override
+            public void onDuplicatedTitle() {
+                titleError.postValue(new ErrorMessageModel(R.string.bbs_add_edit_error_duplicated_title));
+                submitState.postValue(LoadingStateValue.FAIL);
+            }
+
+            @Override
+            public void onDuplicatedUrl(@Nonnull String validatedUrl) {
+                url.postValue(validatedUrl);
+                urlError.postValue(new ErrorMessageModel(R.string.bbs_add_edit_error_duplicated_url));
+                submitState.postValue(LoadingStateValue.FAIL);
+            }
+
+            @Override
+            public void onFail() {
+                errorMessage.postValue(new ErrorMessageModel(R.string.bbs_add_edit_error_fail, ErrorDisplayTypeValue.TOAST));
+                submitState.postValue(LoadingStateValue.FAIL);
+            }
+        });
     }
 
 }
