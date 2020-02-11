@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.github.hyota.asciiartboardreader.R;
+import com.github.hyota.asciiartboardreader.model.value.AlertDialogRequestCodeValue;
 import com.github.hyota.asciiartboardreader.model.value.ErrorDisplayTypeValue;
 import com.github.hyota.asciiartboardreader.ui.common.AlertDialogFragment;
 import com.github.hyota.asciiartboardreader.ui.common.ErrorMessageModel;
@@ -66,21 +67,21 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment im
         initializeFloatingActionButton();
     }
 
+    @Override
+    public void onAlertDialogSucceeded(@AlertDialogRequestCodeValue.AlertDialogRequestCode int requestCode, int resultCode, Bundle params) {
+        // NOOP
+    }
+
+    @Override
+    public void onAlertDialogCancelled(@AlertDialogRequestCodeValue.AlertDialogRequestCode int requestCode, Bundle params) {
+        // NOOP
+    }
+
     @NonNull
     protected abstract String getActionBarTitle();
 
     @NonNull
     protected abstract Class<VM> getViewModelClass();
-
-    @Override
-    public void onAlertDialogSucceeded(int requestCode, int resultCode, Bundle params) {
-        // NOOP
-    }
-
-    @Override
-    public void onAlertDialogCancelled(int requestCode, Bundle params) {
-        // NOOP
-    }
 
     protected void initializeFloatingActionButton() {
         if (hasFloatingActionButton != null) {

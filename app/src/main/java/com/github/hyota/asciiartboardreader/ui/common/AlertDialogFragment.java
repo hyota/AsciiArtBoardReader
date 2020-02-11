@@ -13,6 +13,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
+import com.github.hyota.asciiartboardreader.model.value.AlertDialogRequestCodeValue;
+
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import lombok.experimental.Tolerate;
@@ -31,7 +33,7 @@ public class AlertDialogFragment extends DialogFragment {
          * @param resultCode  DialogInterface.BUTTON_(POSI|NEGA)TIVE 若しくはリストの position
          * @param params      受渡した引数
          */
-        void onAlertDialogSucceeded(int requestCode, int resultCode, Bundle params);
+        void onAlertDialogSucceeded(@AlertDialogRequestCodeValue.AlertDialogRequestCode int requestCode, int resultCode, Bundle params);
 
         /**
          * キャンセルされた時に呼ばれる.
@@ -39,7 +41,7 @@ public class AlertDialogFragment extends DialogFragment {
          * @param requestCode 実行時 requestCode
          * @param params      受渡した引数
          */
-        void onAlertDialogCancelled(int requestCode, Bundle params);
+        void onAlertDialogCancelled(@AlertDialogRequestCodeValue.AlertDialogRequestCode int requestCode, Bundle params);
     }
 
     /**
@@ -81,7 +83,8 @@ public class AlertDialogFragment extends DialogFragment {
         /** リクエストコード. 親 Fragment 側の戻りで受け取る. */
         @Accessors(chain = true)
         @Setter
-        int requestCode = -1;
+        @AlertDialogRequestCodeValue.AlertDialogRequestCode
+        int requestCode = AlertDialogRequestCodeValue.NONE;
 
         /** リスナに受け渡す任意のパラメータ. */
         @Accessors(chain = true)
@@ -97,9 +100,6 @@ public class AlertDialogFragment extends DialogFragment {
         @Accessors(chain = true)
         @Setter
         private boolean cancelable = true;
-
-        @NonNull
-        private Context context;
 
         /**
          * コンストラクタ. Activity 上から生成する場合.
@@ -161,7 +161,7 @@ public class AlertDialogFragment extends DialogFragment {
          * @return Builder
          */
         @Tolerate
-        public Builder setNnegative(@StringRes final int negative) {
+        public Builder setNegative(@StringRes final int negative) {
             return setNegative(getContext().getString(negative));
         }
 
@@ -181,11 +181,7 @@ public class AlertDialogFragment extends DialogFragment {
             }
 
             final AlertDialogFragment f = new AlertDialogFragment();
-            if (mParentFragment != null) {
-                f.setTargetFragment(mParentFragment, requestCode);
-            } else {
-                args.putInt("request_code", requestCode);
-            }
+            args.putInt("request_code", requestCode);
             f.setArguments(args);
             if (mParentFragment != null) {
                 f.show(mParentFragment.getChildFragmentManager(), tag);
@@ -231,7 +227,7 @@ public class AlertDialogFragment extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         final DialogInterface.OnClickListener listener = (dialog, which) -> {
             dismiss();
-            mCallback.onAlertDialogSucceeded(getRequestCode(), which, getArguments().getBundle("params"));
+            mCallback.onAlertDialogSucceeded(getArguments().getInt("request_code"), which, getArguments().getBundle("params"));
         };
         final String title = getArguments().getString("title");
         final String message = getArguments().getString("message");
@@ -260,15 +256,7 @@ public class AlertDialogFragment extends DialogFragment {
 
     @Override
     public void onCancel(@NonNull DialogInterface dialog) {
-        mCallback.onAlertDialogCancelled(getRequestCode(), getArguments().getBundle("params"));
+        mCallback.onAlertDialogCancelled(getArguments().getInt("request_code"), getArguments().getBundle("params"));
     }
 
-    /**
-     * リクエストコードを取得する. Activity と ParentFragment 双方に対応するため.
-     *
-     * @return requestCode
-     */
-    private int getRequestCode() {
-        return getArguments().containsKey("request_code") ? getArguments().getInt("request_code") : getTargetRequestCode();
-    }
 }

@@ -10,10 +10,12 @@
 
     <!-- 汎用 -->
     <string name="error_dialog_title">エラー</string>
+    <string name="confirm_dialog_title">確認</string>
 
     <!-- 板一覧 -->
     <string name="bbs_list_title">板一覧</string>
     <string name="bbs_list_load_error">板一覧の取得に失敗しました</string>
+    <string name="bbs_list_delete_error">板の削除に失敗しました</string>
 
     <!-- 板追加・編集ダイアログ -->
     <string name="bbs_add_title">板追加</string>
@@ -26,6 +28,10 @@
     <string name="bbs_add_edit_error_duplicated_title">登録済みの板名です</string>
     <string name="bbs_add_edit_error_duplicated_url">登録済みのURLです</string>
     <string name="bbs_add_edit_error_fail">板の保存に失敗しました</string>
+
+    <!-- 板削除確認 -->
+    <string name="bbs_delete_confirm_message">板を削除します。板に紐づく設定(履歴、お気に入り etc.)
+        がすべて削除されます。よろしいですか？</string>
 
     <!-- スレッド一覧 -->
     <string name="label_count">レス：</string>
