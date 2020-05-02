@@ -1,4 +1,4 @@
-package com.github.hyota.asciiartboardreader.model.net;
+package com.github.hyota.asciiartboardreader.model.net.converter;
 
 import com.github.hyota.asciiartboardreader.model.common.CharsetDetectorReader;
 import com.github.hyota.asciiartboardreader.model.entity.Setting;

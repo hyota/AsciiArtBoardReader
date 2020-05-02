@@ -32,7 +32,7 @@
             android:layout_marginStart="@dimen/text_margin"
             android:layout_marginEnd="@dimen/text_margin"
             android:layout_marginBottom="@dimen/text_margin_vertical"
-            android:text="@{bbs.httpUrl.toString()}"
+            android:text="@{bbs.toUrlString()}"
             android:textAppearance="?attr/textAppearanceListItemSecondary" />
     </LinearLayout>
 </layout>

@@ -41,5 +41,6 @@
     <string name="label_since">since：</string>
     <string name="label_last_update">最終取得：</string>
     <string name="label_last_write">最終書込：</string>
+    <string name="bbs_thread_list_load_error">スレッド覧の取得に失敗しました</string>
 
 </resources>

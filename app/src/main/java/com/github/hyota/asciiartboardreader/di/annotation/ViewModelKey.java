@@ -1,4 +1,4 @@
-package com.github.hyota.asciiartboardreader.di;
+package com.github.hyota.asciiartboardreader.di.annotation;
 
 import androidx.lifecycle.ViewModel;
 

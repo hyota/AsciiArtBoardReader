@@ -17,4 +17,8 @@ public class LoadingStateValue {
     public static final int SUCCESS = 2;
     public static final int FAIL = 3;
 
+    public static boolean isLoading(@LoadingState Integer state) {
+        return state == LOADING;
+    }
+
 }

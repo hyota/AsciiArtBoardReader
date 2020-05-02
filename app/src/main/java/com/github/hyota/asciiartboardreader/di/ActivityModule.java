@@ -1,6 +1,6 @@
 package com.github.hyota.asciiartboardreader.di;
 
-import com.github.hyota.asciiartboardreader.di.scope.ActivityScope;
+import com.github.hyota.asciiartboardreader.di.annotation.ActivityScope;
 import com.github.hyota.asciiartboardreader.ui.main.MainActivity;
 
 import dagger.Module;

@@ -9,7 +9,10 @@ import com.github.hyota.asciiartboardreader.model.dao.BbsDao;
 import com.github.hyota.asciiartboardreader.model.entity.Bbs;
 
 @Database(entities = {Bbs.class}, version = 1, exportSchema = false)
-@TypeConverters({PathSegmentsTypeConverter.class})
+@TypeConverters({
+        CharsetTypeConverter.class,
+        PathSegmentsTypeConverter.class,
+})
 public abstract class AppDatabase extends RoomDatabase {
     public static final String DATABASE_NAME = BuildConfig.APPLICATION_ID + ".database";
 

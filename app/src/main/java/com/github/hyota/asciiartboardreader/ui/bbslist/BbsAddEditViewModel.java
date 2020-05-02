@@ -92,7 +92,7 @@ public class BbsAddEditViewModel extends BaseViewModel {
         if (this.bbs == null) {
             this.bbs = initialValue;
             title.postValue(bbs.getTitle());
-            url.postValue(bbs.getHttpUrl().toString());
+            url.postValue(bbs.toUrlString());
         }
     }
 

@@ -73,7 +73,7 @@ public abstract class InsertUpdateBbsUseCase {
         }
         Bbs selectUrlEquals = bbsRepository.selectUrlEquals(entity);
         if (selectUrlEquals != null && selectUrlEquals.getId() != entity.getId()) {
-            callback.onDuplicatedUrl(entity.getHttpUrl().toString());
+            callback.onDuplicatedUrl(entity.toUrlString());
             return;
         }
         try {
@@ -117,10 +117,12 @@ public abstract class InsertUpdateBbsUseCase {
         @Override
         protected Bbs createBbs(@Nonnull String title, @Nonnull HttpUrl url, @Nullable Bbs old) {
             long oldId = 0;
+            String charsetString = null;
             if (old != null) {
                 oldId = old.getId();
+                charsetString = old.getCharsetString();
             }
-            return new Bbs(oldId, title, url);
+            return new Bbs(oldId, title, charsetString, url);
         }
 
         @Override

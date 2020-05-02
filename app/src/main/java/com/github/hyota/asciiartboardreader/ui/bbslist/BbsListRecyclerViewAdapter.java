@@ -53,7 +53,7 @@ public class BbsListRecyclerViewAdapter extends UpdatableRecyclerViewAdapter<Bbs
         return oldItem.equals(newItem);
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder {
         final ItemBbsBinding binding;
 
         ViewHolder(@NonNull ItemBbsBinding binding) {

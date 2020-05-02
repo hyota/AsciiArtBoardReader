@@ -25,6 +25,7 @@ import com.github.hyota.asciiartboardreader.ui.base.BaseActivity;
 import com.github.hyota.asciiartboardreader.ui.base.HasActionBar;
 import com.github.hyota.asciiartboardreader.ui.base.HasFloatingActionButton;
 import com.github.hyota.asciiartboardreader.ui.bbslist.BbsListFragment;
+import com.github.hyota.asciiartboardreader.ui.bbsthredlist.BbsThreadListFragment;
 import com.google.android.material.navigation.NavigationView;
 
 import javax.inject.Inject;
@@ -171,8 +172,12 @@ public class MainActivity extends BaseActivity<MainViewModel>
 
     @Override
     public void onSelectBbs(@NonNull Bbs bbs) {
-        // TODO
-        Timber.d("select %s, %s", bbs.getTitle(), bbs.getHttpUrl().toString());
+        Timber.d("select %s, %s", bbs.getTitle(), bbs.toUrlString());
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.container, BbsThreadListFragment.newInstance(bbs))
+                .addToBackStack(null)
+                .commit();
     }
 
 }

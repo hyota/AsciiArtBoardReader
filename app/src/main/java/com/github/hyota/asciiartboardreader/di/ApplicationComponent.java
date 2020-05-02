@@ -19,6 +19,7 @@ import dagger.android.support.AndroidSupportInjectionModule;
         DatabaseModule.class,
         NetworkModule.class,
         RepositoryModule.class,
+        StorageModule.class,
 })
 public interface ApplicationComponent extends AndroidInjector<MyApplication> {
 

@@ -69,11 +69,13 @@ public class BbsListFragment extends BaseFragment<BbsListViewModel>
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        Timber.d("onViewCreated.");
         RecyclerView.ItemDecoration itemDecoration =
                 new DividerItemDecoration(context, DividerItemDecoration.VERTICAL);
         binding.list.addItemDecoration(itemDecoration);
         binding.list.setAdapter(new EmptyReciyclerViewAdapter());
         viewModel.getBbsList().observe(getViewLifecycleOwner(), bbsList -> {
+            Timber.d("adapter %s", adapter);
             if (adapter != null) {
                 adapter.update(bbsList);
                 swipeDeleteItemTouchCallback.setItemList(bbsList);
@@ -107,6 +109,13 @@ public class BbsListFragment extends BaseFragment<BbsListViewModel>
                 new ItemTouchHelper(swipeDeleteItemTouchCallback).attachToRecyclerView(binding.list);
             }
         });
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding.list.setAdapter(null);
+        adapter = null;
     }
 
     @Override

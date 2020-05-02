@@ -1,7 +1,7 @@
 package com.github.hyota.asciiartboardreader.model.repository;
 
 import com.github.hyota.asciiartboardreader.model.entity.Setting;
-import com.github.hyota.asciiartboardreader.model.net.SettingConverterFactory;
+import com.github.hyota.asciiartboardreader.model.net.converter.SettingConverterFactory;
 
 import org.jetbrains.annotations.NotNull;
 

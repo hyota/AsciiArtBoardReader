@@ -41,13 +41,16 @@ public class ShitarabaUtils {
     @Nullable
     public Bbs convert(@Nullable Bbs bbs) {
         if (bbs == null) {
+            log.warn("bbs is null.");
             return null;
         }
         if (!isShitarabaHost(bbs.getHost())) {
+            log.debug("host is not shitaraba host. {}", bbs.getHost());
             return bbs;
         }
-        Matcher m = SHITARABA_PATTERN.matcher(bbs.getHttpUrl().toString());
+        Matcher m = SHITARABA_PATTERN.matcher(bbs.toUrlString());
         if (!m.matches()) {
+            log.warn("url is not shitaraba pattern. {}", bbs.toUrlString());
             return bbs;
         }
         try {

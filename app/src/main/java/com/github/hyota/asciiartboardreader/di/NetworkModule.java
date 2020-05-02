@@ -2,7 +2,7 @@ package com.github.hyota.asciiartboardreader.di;
 
 import android.content.Context;
 
-import com.github.hyota.asciiartboardreader.model.net.SettingConverterFactory;
+import com.github.hyota.asciiartboardreader.model.net.converter.SettingConverterFactory;
 import com.readystatesoftware.chuck.ChuckInterceptor;
 
 import java.util.concurrent.Executors;
@@ -36,7 +36,7 @@ public class NetworkModule {
     Retrofit provideRetrofit(OkHttpClient client, SettingConverterFactory settingConverterFactory) {
         return new Retrofit.Builder()
                 .addConverterFactory(settingConverterFactory)
-                .baseUrl("http://jbbs.livedoor.jp")
+                .baseUrl("http://jbbs.shitaraba.net")
                 .client(client)
                 .callbackExecutor(Executors.newSingleThreadExecutor())
                 .build();
