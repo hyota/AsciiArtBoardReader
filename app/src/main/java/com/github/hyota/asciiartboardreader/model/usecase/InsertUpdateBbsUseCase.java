@@ -4,6 +4,9 @@ import com.github.hyota.asciiartboardreader.model.entity.Bbs;
 import com.github.hyota.asciiartboardreader.model.entity.Setting;
 import com.github.hyota.asciiartboardreader.model.repository.BbsRepository;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
@@ -14,6 +17,8 @@ import okhttp3.HttpUrl;
 @Slf4j
 public abstract class InsertUpdateBbsUseCase {
 
+    @Nonnull
+    private ExecutorService executorService;
     @Nonnull
     private ValidateBbsUrlUseCase validateBbsUrlUseCase;
     @Nonnull
@@ -33,13 +38,14 @@ public abstract class InsertUpdateBbsUseCase {
 
     }
 
-    protected InsertUpdateBbsUseCase(@Nonnull ValidateBbsUrlUseCase validateBbsUrlUseCase, @Nonnull BbsRepository bbsRepository) {
+    public InsertUpdateBbsUseCase(@Nonnull ExecutorService executorService, @Nonnull ValidateBbsUrlUseCase validateBbsUrlUseCase, @Nonnull BbsRepository bbsRepository) {
+        this.executorService = executorService;
         this.validateBbsUrlUseCase = validateBbsUrlUseCase;
         this.bbsRepository = bbsRepository;
     }
 
-    public void execute(@Nonnull String title, @Nonnull String url, @Nullable Bbs old, @Nonnull Callback callback) {
-        new Thread(() -> validateBbsUrlUseCase.execute(url, new ValidateBbsUrlUseCase.Callback() {
+    public Future<?> execute(@Nonnull String title, @Nonnull String url, @Nullable Bbs old, @Nonnull Callback callback) {
+        return executorService.submit(() -> validateBbsUrlUseCase.execute(url, new ValidateBbsUrlUseCase.Callback() {
             @Override
             public void onSuccess(@Nonnull String validatedUrl, @Nonnull Setting setting) {
                 validateAndSave(title, validatedUrl, old, callback);
@@ -54,7 +60,7 @@ public abstract class InsertUpdateBbsUseCase {
             public void onFail() {
                 callback.onFail();
             }
-        })).start();
+        }));
     }
 
     protected void validateAndSave(@Nonnull String title, @Nonnull String url, @Nullable Bbs old, @Nonnull Callback callback) {
@@ -92,8 +98,8 @@ public abstract class InsertUpdateBbsUseCase {
     public static class InsertBbsUseCase extends InsertUpdateBbsUseCase {
 
         @Inject
-        public InsertBbsUseCase(@Nonnull ValidateBbsUrlUseCase validateBbsUrlUseCase, @Nonnull BbsRepository bbsRepository) {
-            super(validateBbsUrlUseCase, bbsRepository);
+        public InsertBbsUseCase(@Nonnull ExecutorService executorService, @Nonnull ValidateBbsUrlUseCase validateBbsUrlUseCase, @Nonnull BbsRepository bbsRepository) {
+            super(executorService, validateBbsUrlUseCase, bbsRepository);
         }
 
         @Override
@@ -110,8 +116,8 @@ public abstract class InsertUpdateBbsUseCase {
     public static class UpdateBbsUseCase extends InsertUpdateBbsUseCase {
 
         @Inject
-        public UpdateBbsUseCase(@Nonnull ValidateBbsUrlUseCase validateBbsUrlUseCase, @Nonnull BbsRepository bbsRepository) {
-            super(validateBbsUrlUseCase, bbsRepository);
+        public UpdateBbsUseCase(@Nonnull ExecutorService executorService, @Nonnull ValidateBbsUrlUseCase validateBbsUrlUseCase, @Nonnull BbsRepository bbsRepository) {
+            super(executorService, validateBbsUrlUseCase, bbsRepository);
         }
 
         @Override

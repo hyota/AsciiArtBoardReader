@@ -6,7 +6,10 @@ import com.github.hyota.asciiartboardreader.model.entity.Bbs;
 import com.github.hyota.asciiartboardreader.model.repository.BbsRepository;
 
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 
+import javax.annotation.Nonnull;
 import javax.inject.Inject;
 
 import lombok.extern.slf4j.Slf4j;
@@ -20,23 +23,26 @@ public class LoadBbsUseCase {
         void onFail();
     }
 
+    @Nonnull
+    private ExecutorService executorService;
     @NonNull
     private BbsRepository bbsRepository;
 
     @Inject
-    public LoadBbsUseCase(@NonNull BbsRepository bbsRepository) {
+    public LoadBbsUseCase(@Nonnull ExecutorService executorService, @NonNull BbsRepository bbsRepository) {
+        this.executorService = executorService;
         this.bbsRepository = bbsRepository;
     }
 
-    public void execute(@NonNull Callback callback) {
-        new Thread(() -> {
+    public Future<?> execute(@NonNull Callback callback) {
+        return executorService.submit(() -> {
             try {
                 callback.onSuccess(bbsRepository.findAll());
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
                 callback.onFail();
             }
-        }).start();
+        });
     }
 
 }

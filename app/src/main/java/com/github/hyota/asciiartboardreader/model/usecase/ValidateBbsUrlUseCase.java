@@ -5,6 +5,9 @@ import com.github.hyota.asciiartboardreader.model.repository.SettingRepository;
 import com.github.hyota.asciiartboardreader.model.repository.ShitarabaSettingRepository;
 import com.github.hyota.asciiartboardreader.model.utils.ShitarabaUtils;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
@@ -16,6 +19,8 @@ import okhttp3.HttpUrl;
 public class ValidateBbsUrlUseCase {
 
     @Nonnull
+    private ExecutorService executorService;
+    @Nonnull
     private SettingRepository settingRepository;
     @Nonnull
     private ShitarabaSettingRepository shitarabaSettingRepository;
@@ -23,7 +28,8 @@ public class ValidateBbsUrlUseCase {
     private ShitarabaUtils shitarabaUtils;
 
     @Inject
-    public ValidateBbsUrlUseCase(@Nonnull SettingRepository settingRepository, @Nonnull ShitarabaSettingRepository shitarabaSettingRepository, @Nonnull ShitarabaUtils shitarabaUtils) {
+    public ValidateBbsUrlUseCase(@Nonnull ExecutorService executorService, @Nonnull SettingRepository settingRepository, @Nonnull ShitarabaSettingRepository shitarabaSettingRepository, @Nonnull ShitarabaUtils shitarabaUtils) {
+        this.executorService = executorService;
         this.settingRepository = settingRepository;
         this.shitarabaSettingRepository = shitarabaSettingRepository;
         this.shitarabaUtils = shitarabaUtils;
@@ -39,8 +45,8 @@ public class ValidateBbsUrlUseCase {
 
     }
 
-    public void execute(@Nonnull String url, @Nonnull Callback callback) {
-        new Thread(() -> {
+    public Future<?> execute(@Nonnull String url, @Nonnull Callback callback) {
+        return executorService.submit(() -> {
             HttpUrl httpUrl = HttpUrl.parse(url);
             if (httpUrl == null) {
                 log.debug("url parse failed. url = {}", url);
@@ -52,7 +58,7 @@ public class ValidateBbsUrlUseCase {
             } else {
                 execute(httpUrl, settingRepository, callback);
             }
-        }).start();
+        });
     }
 
     private void execute(@Nonnull HttpUrl url, @Nonnull SettingRepository settingRepository, @Nonnull Callback callback) {
