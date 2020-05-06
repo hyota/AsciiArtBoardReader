@@ -6,6 +6,7 @@ import com.github.hyota.asciiartboardreader.di.annotation.Shitaraba;
 import com.github.hyota.asciiartboardreader.model.entity.Bbs;
 import com.github.hyota.asciiartboardreader.model.entity.ShitarabaBbs;
 import com.github.hyota.asciiartboardreader.model.entity.Subject;
+import com.github.hyota.asciiartboardreader.model.net.download.DownloadProgressListener;
 import com.github.hyota.asciiartboardreader.model.repository.SubjectRepository;
 
 import java.util.concurrent.ExecutorService;
@@ -35,25 +36,24 @@ public class LoadSubjectUseCase {
     private SubjectRepository subjectShitarabaRepository;
 
     @Inject
-    public LoadSubjectUseCase(@Nonnull ExecutorService executorService, @Local @Nonnull SubjectRepository subjectLocalRepository, @Nonnull @Remote SubjectRepository subjectRemoteRepository,
-                              @Nonnull @Shitaraba SubjectRepository subjectShitarabaRepository) {
+    public LoadSubjectUseCase(@Nonnull ExecutorService executorService, @Local @Nonnull SubjectRepository subjectLocalRepository, @Nonnull @Remote SubjectRepository subjectRemoteRepository, @Nonnull @Shitaraba SubjectRepository subjectShitarabaRepository) {
         this.executorService = executorService;
         this.subjectLocalRepository = subjectLocalRepository;
         this.subjectRemoteRepository = subjectRemoteRepository;
         this.subjectShitarabaRepository = subjectShitarabaRepository;
     }
 
-    public Future<?> execute(@Nonnull Bbs bbs, boolean force, @Nonnull Callback callback) {
+    public Future<?> execute(@Nonnull Bbs bbs, boolean force, @Nonnull Callback callback, @Nonnull DownloadProgressListener progressListener) {
         return executorService.submit(() -> {
             if (force) {
-                loadFromRemote(bbs, callback);
+                loadFromRemote(bbs, callback, progressListener);
             } else {
-                loadFromLocal(bbs, callback);
+                loadFromLocal(bbs, callback, progressListener);
             }
         });
     }
 
-    private void loadFromLocal(@Nonnull Bbs bbs, @Nonnull Callback callback) {
+    private void loadFromLocal(@Nonnull Bbs bbs, @Nonnull Callback callback, @Nonnull DownloadProgressListener progressListener) {
         subjectLocalRepository.load(bbs, new SubjectRepository.Callback() {
             @Override
             public void onSuccess(@Nonnull Subject subject) {
@@ -64,18 +64,18 @@ public class LoadSubjectUseCase {
             @Override
             public void onFail() {
                 log.warn("local subject file load failed.");
-                loadFromRemote(bbs, callback);
+                loadFromRemote(bbs, callback, progressListener);
             }
 
             @Override
             public void onNotFound() {
                 log.debug("local subject file is not found.");
-                loadFromRemote(bbs, callback);
+                loadFromRemote(bbs, callback, progressListener);
             }
         });
     }
 
-    private void loadFromRemote(@Nonnull Bbs bbs, @Nonnull Callback callback) {
+    private void loadFromRemote(@Nonnull Bbs bbs, @Nonnull Callback callback, @Nonnull DownloadProgressListener progressListener) {
         SubjectRepository repository;
         if (bbs instanceof ShitarabaBbs) {
             log.debug("load from shitaraba.");
@@ -102,7 +102,7 @@ public class LoadSubjectUseCase {
                 log.debug("remote subject file is not found.");
                 callback.onFail();
             }
-        });
+        }, progressListener);
     }
 
 }

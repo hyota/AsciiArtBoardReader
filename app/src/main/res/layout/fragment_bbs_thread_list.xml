@@ -3,21 +3,38 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout
-        android:id="@+id/swipyrefreshlayout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:srl_direction="both">
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/list"
-            android:name="com.github.hyota.asciiartboardreader.ui.bbsthreadlist.BbsThreadListFragment"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layoutManager="LinearLayoutManager"
-            tools:context=".ui.bbsthreadlist.BbsThreadListFragment"
-            tools:listitem="@layout/item_bbs_thread" />
+        <ProgressBar
+            android:id="@+id/progress"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/background_dark"
+            android:max="100"
+            android:progress="0"
+            android:progressDrawable="@android:color/holo_orange_dark"
+            android:visibility="gone" />
 
-    </com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout>
+        <com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout
+            android:id="@+id/swipyrefreshlayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srl_direction="both">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/list"
+                android:name="com.github.hyota.asciiartboardreader.ui.bbsthreadlist.BbsThreadListFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layoutManager="LinearLayoutManager"
+                tools:context=".ui.bbsthreadlist.BbsThreadListFragment"
+                tools:listitem="@layout/item_bbs_thread" />
+
+        </com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout>
+
+    </FrameLayout>
 
 </layout>

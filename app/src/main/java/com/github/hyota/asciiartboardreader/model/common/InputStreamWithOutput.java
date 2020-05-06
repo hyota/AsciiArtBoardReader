@@ -34,7 +34,6 @@ public class InputStreamWithOutput extends InputStream {
     @Override
     public int read() throws IOException {
         int read = in.read();
-        log.debug("read = {}", read);
         bos.write(read);
         return read;
     }

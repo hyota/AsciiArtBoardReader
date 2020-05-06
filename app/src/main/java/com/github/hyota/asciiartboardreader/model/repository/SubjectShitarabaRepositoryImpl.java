@@ -7,13 +7,17 @@ import com.github.hyota.asciiartboardreader.model.entity.ShitarabaBbs;
 import com.github.hyota.asciiartboardreader.model.entity.Subject;
 import com.github.hyota.asciiartboardreader.model.net.ShitarabaService;
 import com.github.hyota.asciiartboardreader.model.net.converter.SubjectConverterFactory;
+import com.github.hyota.asciiartboardreader.model.net.download.DownloadProgressInterceptor;
+import com.github.hyota.asciiartboardreader.model.net.download.DownloadProgressListener;
 
 import java.io.File;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 
 import lombok.extern.slf4j.Slf4j;
+import okhttp3.OkHttpClient;
 import okhttp3.ResponseBody;
 import retrofit2.Retrofit;
 
@@ -23,16 +27,19 @@ public class SubjectShitarabaRepositoryImpl implements SubjectRepository {
     @Nonnull
     private Retrofit retrofit;
     @Nonnull
+    private OkHttpClient client;
+    @Nonnull
     private File storage;
 
     @Inject
-    public SubjectShitarabaRepositoryImpl(@Nonnull Retrofit retrofit, @Local @Nonnull File storage) {
+    public SubjectShitarabaRepositoryImpl(@Nonnull Retrofit retrofit, @Nonnull OkHttpClient client, @Local @Nonnull File storage) {
         this.retrofit = retrofit;
+        this.client = client;
         this.storage = storage;
     }
 
     @Override
-    public void load(@Nonnull Bbs bbs, @Nonnull Callback callback) {
+    public void load(@Nonnull Bbs bbs, @Nonnull Callback callback, @Nullable DownloadProgressListener progressListener) {
         if (!(bbs instanceof ShitarabaBbs)) {
             log.warn("bbs {} is not ShitarabaBbs.", bbs.getClass());
             callback.onFail();
@@ -40,9 +47,17 @@ public class SubjectShitarabaRepositoryImpl implements SubjectRepository {
         }
 
         ShitarabaBbs shitarabaBbs = (ShitarabaBbs) bbs;
-        Retrofit retrofit = this.retrofit.newBuilder()
-//                .addConverterFactory(new SubjectConverterFactory(bbs.getCharset(), is -> new InputStreamWithOutput(is, getSubjectFile(storage, bbs))))
-                .build();
+        Retrofit retrofit;
+        if (progressListener != null) {
+            OkHttpClient client = this.client.newBuilder()
+                    .addInterceptor(new DownloadProgressInterceptor(progressListener))
+                    .build();
+            retrofit = this.retrofit.newBuilder()
+                    .client(client)
+                    .build();
+        } else {
+            retrofit = this.retrofit;
+        }
         SubjectConverterFactory.SubjectSteamConverter converter = new SubjectConverterFactory.SubjectSteamConverter(bbs.getCharset(), is -> new InputStreamWithOutput(is, getSubjectFile(storage, bbs)));
         ShitarabaService api = retrofit.create(ShitarabaService.class);
         log.debug("load start.");

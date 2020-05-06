@@ -36,7 +36,6 @@ public class BbsRepositoryImpl implements BbsRepository {
             if (bbsList.isEmpty()) {
                 insert(new Bbs("やる夫スレヒロイン板", "http", "jbbs.shitaraba.net", Arrays.asList("otaku", "12766")));
                 insert(new Bbs("ゑれぼす板・桜", "http", "erebos.sakura.ne.jp", Arrays.asList("BBS")));
-                return dao.findAll();
             }
         }
         return Stream.of(dao.findAll()).map(shitarabaUtils::convert).collect(Collectors.toList());

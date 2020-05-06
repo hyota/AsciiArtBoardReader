@@ -5,6 +5,8 @@ import com.github.hyota.asciiartboardreader.model.common.InputStreamWithOutput;
 import com.github.hyota.asciiartboardreader.model.entity.Bbs;
 import com.github.hyota.asciiartboardreader.model.entity.Subject;
 import com.github.hyota.asciiartboardreader.model.net.converter.SubjectConverterFactory;
+import com.github.hyota.asciiartboardreader.model.net.download.DownloadProgressInterceptor;
+import com.github.hyota.asciiartboardreader.model.net.download.DownloadProgressListener;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -13,6 +15,7 @@ import java.io.IOException;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 
 import lombok.extern.slf4j.Slf4j;
@@ -39,7 +42,7 @@ public class SubjectRemoteRepositoryImpl implements SubjectRepository {
     }
 
     @Override
-    public void load(@Nonnull Bbs bbs, @Nonnull Callback callback) {
+    public void load(@Nonnull Bbs bbs, @Nonnull Callback callback, @Nullable DownloadProgressListener progressListener) {
         HttpUrl url = bbs.getHttpUrl();
         HttpUrl subjectUrl = url.newBuilder()
                 .addPathSegment("subject.txt")
@@ -53,6 +56,14 @@ public class SubjectRemoteRepositoryImpl implements SubjectRepository {
         File subjectFile = getSubjectFile(storage, bbs);
         Converter<ResponseBody, Subject> converter = new SubjectConverterFactory.SubjectResponseConverter(bbs.getCharset(), is -> new InputStreamWithOutput(is, subjectFile));
 
+        OkHttpClient client;
+        if (progressListener != null) {
+            client = this.client.newBuilder()
+                    .addInterceptor(new DownloadProgressInterceptor(progressListener))
+                    .build();
+        } else {
+            client = this.client;
+        }
         client.newCall(request).enqueue(new okhttp3.Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {

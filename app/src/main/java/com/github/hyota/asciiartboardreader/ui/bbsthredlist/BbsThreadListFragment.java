@@ -85,6 +85,18 @@ public class BbsThreadListFragment extends BaseFragment<BbsThreadListViewModel> 
                 new DividerItemDecoration(context, DividerItemDecoration.VERTICAL);
         binding.list.addItemDecoration(itemDecoration);
         binding.list.setAdapter(new EmptyReciyclerViewAdapter());
+        viewModel.getLoadingState()
+                .observe(getViewLifecycleOwner(), state -> binding.swipyrefreshlayout.setRefreshing(LoadingStateValue.isLoading(state)));
+        viewModel.getProgressState()
+                .observe(getViewLifecycleOwner(), progress -> {
+                    Timber.d("progress %s", progress);
+                    if (progress <= 0 || 100 <= progress) {
+                        binding.progress.setVisibility(View.GONE);
+                    } else {
+                        binding.progress.setProgress(progress);
+                        binding.progress.setVisibility(View.VISIBLE);
+                    }
+                });
         viewModel.getSubject().observe(getViewLifecycleOwner(), subject -> {
             if (adapter != null) {
                 adapter.update(subject.getThreadInfoList());
@@ -104,8 +116,6 @@ public class BbsThreadListFragment extends BaseFragment<BbsThreadListViewModel> 
                 binding.list.setAdapter(adapter);
             }
         });
-        viewModel.getLoadingState()
-                .observe(getViewLifecycleOwner(), state -> binding.swipyrefreshlayout.setRefreshing(LoadingStateValue.isLoading(state)));
         binding.swipyrefreshlayout.setOnRefreshListener(direction -> viewModel.load());
     }
 

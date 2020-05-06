@@ -31,6 +31,9 @@ public class BbsThreadListViewModel extends BaseViewModel {
     @Getter
     @NonNull
     private MutableLiveData<Integer> loadingState = new MutableLiveData<>(LoadingStateValue.NONE);
+    @Getter
+    @Nonnull
+    private MutableLiveData<Integer> progressState = new MutableLiveData<>(0);
 
     @Getter
     @Setter
@@ -72,6 +75,13 @@ public class BbsThreadListViewModel extends BaseViewModel {
                 Timber.d("load fail.");
                 loadingState.postValue(LoadingStateValue.FAIL);
                 errorMessage.postValue(new ErrorMessageModel(R.string.bbs_thread_list_load_error, ErrorDisplayTypeValue.TOAST));
+            }
+        }, (bytesRead, contentLength, done) -> {
+            if (done) {
+                progressState.postValue(100);
+            } else {
+                int progress = (int) (100 * bytesRead / contentLength);
+                progressState.postValue(progress);
             }
         });
     }

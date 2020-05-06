@@ -4,11 +4,13 @@ import com.github.hyota.asciiartboardreader.di.annotation.Local;
 import com.github.hyota.asciiartboardreader.model.entity.Bbs;
 import com.github.hyota.asciiartboardreader.model.entity.Subject;
 import com.github.hyota.asciiartboardreader.model.net.converter.SubjectConverterFactory;
+import com.github.hyota.asciiartboardreader.model.net.download.DownloadProgressListener;
 
 import java.io.File;
 import java.io.FileInputStream;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 
 import lombok.extern.slf4j.Slf4j;
@@ -18,8 +20,6 @@ public class SubjectLocalRepositoryImpl implements SubjectRepository {
 
     @Nonnull
     private File storage;
-    @Nonnull
-    private SubjectConverterFactory.SubjectSteamConverter converter;
 
     @Inject
     public SubjectLocalRepositoryImpl(@Local @Nonnull File storage) {
@@ -27,7 +27,7 @@ public class SubjectLocalRepositoryImpl implements SubjectRepository {
     }
 
     @Override
-    public void load(@Nonnull Bbs bbs, @Nonnull Callback callback) {
+    public void load(@Nonnull Bbs bbs, @Nonnull Callback callback, @Nullable DownloadProgressListener progressListener) {
         File subjectFile = getSubjectFile(storage, bbs);
         if (!subjectFile.isFile()) {
             callback.onNotFound();
