@@ -5,6 +5,8 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.github.hyota.asciiartboardreader.R;
+import com.github.hyota.asciiartboardreader.di.annotation.Local;
+import com.github.hyota.asciiartboardreader.di.annotation.Remote;
 import com.github.hyota.asciiartboardreader.model.entity.Bbs;
 import com.github.hyota.asciiartboardreader.model.entity.Subject;
 import com.github.hyota.asciiartboardreader.model.usecase.LoadSubjectUseCase;
@@ -25,7 +27,9 @@ import timber.log.Timber;
 public class BbsThreadListViewModel extends BaseViewModel {
 
     @Nonnull
-    private LoadSubjectUseCase loadSubjectUseCase;
+    private LoadSubjectUseCase loadSubjectLocalUseCase;
+    @Nonnull
+    private LoadSubjectUseCase loadSubjectRemoteUseCase;
 
     private MutableLiveData<Subject> subject;
     @Getter
@@ -41,28 +45,30 @@ public class BbsThreadListViewModel extends BaseViewModel {
     private Future<?> loadFuture;
 
     @Inject
-    public BbsThreadListViewModel(@Nonnull LoadSubjectUseCase loadSubjectUseCase) {
-        this.loadSubjectUseCase = loadSubjectUseCase;
+    public BbsThreadListViewModel(@Local @Nonnull LoadSubjectUseCase loadSubjectLocalUseCase, @Nonnull @Remote LoadSubjectUseCase loadSubjectRemoteUseCase) {
+        this.loadSubjectLocalUseCase = loadSubjectLocalUseCase;
+        this.loadSubjectRemoteUseCase = loadSubjectRemoteUseCase;
     }
 
+    @Nonnull
     public LiveData<Subject> getSubject() {
         if (subject == null) {
             subject = new MutableLiveData<>();
-            load(false);
+            load(loadSubjectLocalUseCase);
         }
         return subject;
     }
 
-    public void load() {
-        load(true);
+    public void loadFromRemote() {
+        load(loadSubjectRemoteUseCase);
     }
 
-    private void load(boolean force) {
+    private void load(@Nonnull LoadSubjectUseCase useCase) {
         if (loadFuture != null && !loadFuture.isDone()) {
             return;
         }
         loadingState.postValue(LoadingStateValue.LOADING);
-        loadFuture = loadSubjectUseCase.execute(bbs, force, new LoadSubjectUseCase.Callback() {
+        loadFuture = useCase.execute(bbs, new LoadSubjectUseCase.Callback() {
             @Override
             public void onSuccess(@Nonnull Subject subject) {
                 Timber.d("load success.");

@@ -116,7 +116,7 @@ public class BbsThreadListFragment extends BaseFragment<BbsThreadListViewModel> 
                 binding.list.setAdapter(adapter);
             }
         });
-        binding.swipyrefreshlayout.setOnRefreshListener(direction -> viewModel.load());
+        binding.swipyrefreshlayout.setOnRefreshListener(direction -> viewModel.loadFromRemote());
     }
 
     @Override
