@@ -1,8 +1,8 @@
 package com.github.hyota.asciiartboardreader.model.net.converter;
 
+import com.github.hyota.asciiartboardreader.model.entity.BbsThread;
 import com.github.hyota.asciiartboardreader.model.entity.Setting;
 import com.github.hyota.asciiartboardreader.model.entity.Subject;
-import com.github.hyota.asciiartboardreader.model.entity.ThreadInfo;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -103,7 +103,7 @@ public class SubjectConverterFactory extends Converter.Factory {
             }
             try (InputStreamReader isr = new InputStreamReader(wrapper != null ? wrapper : in, charset);
                  BufferedReader reader = new BufferedReader(isr)) {
-                List<ThreadInfo> threadInfoList = new ArrayList<>();
+                List<BbsThread> bbsThreadList = new ArrayList<>();
                 String line;
                 long id = 0;
                 while ((line = reader.readLine()) != null) {
@@ -112,9 +112,9 @@ public class SubjectConverterFactory extends Converter.Factory {
                         log.warn("not pattern match line. {}", line);
                         continue;
                     }
-                    threadInfoList.add(new ThreadInfo(++id, Long.parseLong(m.group(1)), m.group(2), Long.parseLong(m.group(3))));
+                    bbsThreadList.add(new BbsThread(++id, Long.parseLong(m.group(1)), m.group(2), Long.parseLong(m.group(3))));
                 }
-                return new Subject(threadInfoList);
+                return new Subject(bbsThreadList);
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
             } finally {

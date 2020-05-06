@@ -9,18 +9,18 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.hyota.asciiartboardreader.R;
 import com.github.hyota.asciiartboardreader.databinding.ItemBbsThreadBinding;
-import com.github.hyota.asciiartboardreader.model.entity.ThreadInfo;
+import com.github.hyota.asciiartboardreader.model.entity.BbsThread;
 import com.github.hyota.asciiartboardreader.ui.base.ListItemInteractionListener;
 import com.github.hyota.asciiartboardreader.ui.common.UpdatableRecyclerViewAdapter;
 
 import java.util.List;
 
-public class BbsThreadListRecyclerViewAdapter extends UpdatableRecyclerViewAdapter<ThreadInfo, BbsThreadListRecyclerViewAdapter.ViewHolder> {
+public class BbsThreadListRecyclerViewAdapter extends UpdatableRecyclerViewAdapter<BbsThread, BbsThreadListRecyclerViewAdapter.ViewHolder> {
 
-    private ListItemInteractionListener<ThreadInfo> listener;
+    private ListItemInteractionListener<BbsThread> listener;
 
-    public BbsThreadListRecyclerViewAdapter(@NonNull List<ThreadInfo> itemList,
-                                            @NonNull ListItemInteractionListener<ThreadInfo> listener) {
+    public BbsThreadListRecyclerViewAdapter(@NonNull List<BbsThread> itemList,
+                                            @NonNull ListItemInteractionListener<BbsThread> listener) {
         super(itemList);
         this.listener = listener;
     }
@@ -34,22 +34,22 @@ public class BbsThreadListRecyclerViewAdapter extends UpdatableRecyclerViewAdapt
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
-        ThreadInfo threadInfo = itemList.get(position);
-        holder.binding.setThreadInfo(threadInfo);
-        holder.itemView.setOnClickListener(v -> listener.onItemClick(holder.binding.getThreadInfo()));
+        BbsThread bbsThread = itemList.get(position);
+        holder.binding.setBbsThread(bbsThread);
+        holder.itemView.setOnClickListener(v -> listener.onItemClick(holder.binding.getBbsThread()));
         holder.itemView.setOnLongClickListener(v -> {
-            listener.onItemLongClick(holder.binding.getThreadInfo());
+            listener.onItemLongClick(holder.binding.getBbsThread());
             return true;
         });
     }
 
     @Override
-    protected boolean areItemsTheSame(@NonNull ThreadInfo oldItem, @NonNull ThreadInfo newItem) {
+    protected boolean areItemsTheSame(@NonNull BbsThread oldItem, @NonNull BbsThread newItem) {
         return oldItem.getId() == newItem.getId();
     }
 
     @Override
-    protected boolean areContentsTheSame(@NonNull ThreadInfo oldItem, @NonNull ThreadInfo newItem) {
+    protected boolean areContentsTheSame(@NonNull BbsThread oldItem, @NonNull BbsThread newItem) {
         return oldItem.equals(newItem);
     }
 

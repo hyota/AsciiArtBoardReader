@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.github.hyota.asciiartboardreader.R;
 import com.github.hyota.asciiartboardreader.databinding.FragmentBbsThreadListBinding;
 import com.github.hyota.asciiartboardreader.model.entity.Bbs;
-import com.github.hyota.asciiartboardreader.model.entity.ThreadInfo;
+import com.github.hyota.asciiartboardreader.model.entity.BbsThread;
 import com.github.hyota.asciiartboardreader.model.value.LoadingStateValue;
 import com.github.hyota.asciiartboardreader.ui.base.BaseFragment;
 import com.github.hyota.asciiartboardreader.ui.base.ListItemInteractionListener;
@@ -34,7 +34,7 @@ public class BbsThreadListFragment extends BaseFragment<BbsThreadListViewModel> 
     private BbsThreadListRecyclerViewAdapter adapter;
 
     public interface Listener {
-        void onSelectBbsThread(@Nonnull Bbs bbs, @NonNull ThreadInfo threadInfo);
+        void onSelectBbsThread(@Nonnull Bbs bbs, @NonNull BbsThread bbsThread);
     }
 
     public BbsThreadListFragment() {
@@ -99,17 +99,17 @@ public class BbsThreadListFragment extends BaseFragment<BbsThreadListViewModel> 
                 });
         viewModel.getSubject().observe(getViewLifecycleOwner(), subject -> {
             if (adapter != null) {
-                adapter.update(subject.getThreadInfoList());
+                adapter.update(subject.getBbsThreadList());
             } else {
-                adapter = new BbsThreadListRecyclerViewAdapter(subject.getThreadInfoList(),
-                        new ListItemInteractionListener<ThreadInfo>() {
+                adapter = new BbsThreadListRecyclerViewAdapter(subject.getBbsThreadList(),
+                        new ListItemInteractionListener<BbsThread>() {
                             @Override
-                            public void onItemClick(@NonNull ThreadInfo threadInfo) {
-                                listener.onSelectBbsThread(viewModel.getBbs(), threadInfo);
+                            public void onItemClick(@NonNull BbsThread bbsThread) {
+                                listener.onSelectBbsThread(viewModel.getBbs(), bbsThread);
                             }
 
                             @Override
-                            public void onItemLongClick(@NonNull ThreadInfo threadInfo) {
+                            public void onItemLongClick(@NonNull BbsThread bbsThread) {
                                 // TODO
                             }
                         });

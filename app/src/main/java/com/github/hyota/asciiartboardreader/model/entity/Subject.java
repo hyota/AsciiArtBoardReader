@@ -12,10 +12,10 @@ import lombok.Value;
 public class Subject implements Serializable {
 
     @Nonnull
-    List<ThreadInfo> threadInfoList;
+    List<BbsThread> bbsThreadList;
 
-    public Subject(@Nonnull List<ThreadInfo> threadInfoList) {
-        this.threadInfoList = Collections.unmodifiableList(threadInfoList);
+    public Subject(@Nonnull List<BbsThread> bbsThreadList) {
+        this.bbsThreadList = Collections.unmodifiableList(bbsThreadList);
     }
 
 }

@@ -14,7 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Value
-public class ThreadInfo implements Serializable {
+public class BbsThread implements Serializable {
 
     private static final DateTimeFormatter MM_DD_HH_MM_E = DateTimeFormatter.ofPattern("MM/dd HH:mm(E)");
     private static final DateTimeFormatter YYYY_MM_DD_HH_MM_E = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm(E)");
