@@ -15,7 +15,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 @Slf4j
-public class ShitarabaSettingRepositoryImpl implements ShitarabaSettingRepository {
+public class SettingShitarabaRepositoryImpl implements SettingRepository {
 
     @Nonnull
     private Retrofit retrofit;
@@ -23,7 +23,7 @@ public class ShitarabaSettingRepositoryImpl implements ShitarabaSettingRepositor
     private ShitarabaUtils shitarabaUtils;
 
     @Inject
-    public ShitarabaSettingRepositoryImpl(@Nonnull Retrofit retrofit, @Nonnull ShitarabaUtils shitarabaUtils) {
+    public SettingShitarabaRepositoryImpl(@Nonnull Retrofit retrofit, @Nonnull ShitarabaUtils shitarabaUtils) {
         this.retrofit = retrofit;
         this.shitarabaUtils = shitarabaUtils;
     }

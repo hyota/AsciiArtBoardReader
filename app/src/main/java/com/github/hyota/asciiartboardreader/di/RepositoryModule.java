@@ -7,8 +7,7 @@ import com.github.hyota.asciiartboardreader.model.repository.BbsRepository;
 import com.github.hyota.asciiartboardreader.model.repository.BbsRepositoryImpl;
 import com.github.hyota.asciiartboardreader.model.repository.SettingRepository;
 import com.github.hyota.asciiartboardreader.model.repository.SettingRepositoryImpl;
-import com.github.hyota.asciiartboardreader.model.repository.ShitarabaSettingRepository;
-import com.github.hyota.asciiartboardreader.model.repository.ShitarabaSettingRepositoryImpl;
+import com.github.hyota.asciiartboardreader.model.repository.SettingShitarabaRepositoryImpl;
 import com.github.hyota.asciiartboardreader.model.repository.SubjectLocalRepositoryImpl;
 import com.github.hyota.asciiartboardreader.model.repository.SubjectRemoteRepositoryImpl;
 import com.github.hyota.asciiartboardreader.model.repository.SubjectRepository;
@@ -26,12 +25,14 @@ public class RepositoryModule {
     }
 
     @Provides
+    @Remote
     SettingRepository provideSettingRepository(SettingRepositoryImpl repository) {
         return repository;
     }
 
     @Provides
-    ShitarabaSettingRepository provideShitarabaSettingRepository(ShitarabaSettingRepositoryImpl repository) {
+    @Shitaraba
+    SettingRepository provideShitarabaSettingRepository(SettingShitarabaRepositoryImpl repository) {
         return repository;
     }
 

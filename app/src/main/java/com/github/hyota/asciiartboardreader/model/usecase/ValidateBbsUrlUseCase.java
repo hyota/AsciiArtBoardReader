@@ -1,8 +1,9 @@
 package com.github.hyota.asciiartboardreader.model.usecase;
 
+import com.github.hyota.asciiartboardreader.di.annotation.Remote;
+import com.github.hyota.asciiartboardreader.di.annotation.Shitaraba;
 import com.github.hyota.asciiartboardreader.model.entity.Setting;
 import com.github.hyota.asciiartboardreader.model.repository.SettingRepository;
-import com.github.hyota.asciiartboardreader.model.repository.ShitarabaSettingRepository;
 import com.github.hyota.asciiartboardreader.model.utils.ShitarabaUtils;
 
 import java.util.concurrent.ExecutorService;
@@ -23,15 +24,15 @@ public class ValidateBbsUrlUseCase {
     @Nonnull
     private SettingRepository settingRepository;
     @Nonnull
-    private ShitarabaSettingRepository shitarabaSettingRepository;
+    private SettingRepository settingShitarabaRepository;
     @Nonnull
     private ShitarabaUtils shitarabaUtils;
 
     @Inject
-    public ValidateBbsUrlUseCase(@Nonnull ExecutorService executorService, @Nonnull SettingRepository settingRepository, @Nonnull ShitarabaSettingRepository shitarabaSettingRepository, @Nonnull ShitarabaUtils shitarabaUtils) {
+    public ValidateBbsUrlUseCase(@Nonnull ExecutorService executorService, @Nonnull @Remote SettingRepository settingRepository, @Nonnull @Shitaraba SettingRepository settingShitarabaRepository, @Nonnull ShitarabaUtils shitarabaUtils) {
         this.executorService = executorService;
         this.settingRepository = settingRepository;
-        this.shitarabaSettingRepository = shitarabaSettingRepository;
+        this.settingShitarabaRepository = settingShitarabaRepository;
         this.shitarabaUtils = shitarabaUtils;
     }
 
@@ -53,16 +54,12 @@ public class ValidateBbsUrlUseCase {
                 callback.onInvalidUrl();
                 return;
             }
-            if (shitarabaUtils.isShitarabaHost(httpUrl.host())) {
-                execute(httpUrl, shitarabaSettingRepository, callback);
-            } else {
-                execute(httpUrl, settingRepository, callback);
-            }
+            execute(httpUrl, getSettingRepository(httpUrl.host()), callback);
         });
     }
 
-    private void execute(@Nonnull HttpUrl url, @Nonnull SettingRepository settingRepository, @Nonnull Callback callback) {
-        settingRepository.load(url, new SettingRepository.Callback() {
+    private void execute(@Nonnull HttpUrl httpUrl, @Nonnull SettingRepository settingRepository, @Nonnull Callback callback) {
+        settingRepository.load(httpUrl, new SettingRepository.Callback() {
             @Override
             public void onSuccess(@Nonnull String validatedUrl, @Nullable Setting setting) {
                 if (setting != null) {
@@ -74,11 +71,11 @@ public class ValidateBbsUrlUseCase {
 
             @Override
             public void onInvalidUrl() {
-                if (url.pathSegments().isEmpty()) {
+                if (shitarabaUtils.isShitarabaHost(httpUrl.host()) || httpUrl.pathSegments().isEmpty()) {
                     callback.onInvalidUrl();
                 } else {
-                    HttpUrl newUrl = url.newBuilder()
-                            .removePathSegment(url.pathSize() - 1)
+                    HttpUrl newUrl = httpUrl.newBuilder()
+                            .removePathSegment(httpUrl.pathSize() - 1)
                             .build();
                     execute(newUrl, settingRepository, callback);
                 }
@@ -91,27 +88,13 @@ public class ValidateBbsUrlUseCase {
         });
     }
 
-    private void execute(@Nonnull HttpUrl url, @Nonnull ShitarabaSettingRepository settingRepository, @Nonnull Callback callback) {
-        settingRepository.load(url, new SettingRepository.Callback() {
-            @Override
-            public void onSuccess(@Nonnull String validatedUrl, @Nullable Setting setting) {
-                if (setting != null) {
-                    callback.onSuccess(validatedUrl, setting);
-                } else {
-                    callback.onInvalidUrl();
-                }
-            }
-
-            @Override
-            public void onInvalidUrl() {
-                callback.onInvalidUrl();
-            }
-
-            @Override
-            public void onFail() {
-                callback.onFail();
-            }
-        });
+    @Nonnull
+    private SettingRepository getSettingRepository(@Nonnull String host) {
+        if (shitarabaUtils.isShitarabaHost(host)) {
+            return settingShitarabaRepository;
+        } else {
+            return settingRepository;
+        }
     }
 
 }
